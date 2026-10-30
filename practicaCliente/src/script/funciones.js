@@ -1,11 +1,20 @@
 /**
+ * Constantes y variables
+ */
+
+//Elemento HTML Hora
+const horaHTML = document.getElementById("current-time");
+//ELEMENTO HTML FECHA
+const fechHTML = document.getElementById("current-date");
+
+/**
  *Funcion que genera la fecha actual de hoy y muestra la hora cada segundo 
  */
 
  function muestraFecha(){
  //saco el elemento que muestra la fecha y la hora en el html que voy a usar
  //dentro de la funcion para actualizar los datos
-const fechHTML = document.getElementById("current-date");
+fechHTML = document.getElementById("current-date");
 
 //creo una constante de la fecha que es ahoram ismo
 const fechaHoy = new Date();
@@ -56,7 +65,7 @@ function actualizarHora() {
     second: '2-digit' 
   });
   
-  const horaHTML = document.getElementById("current-time");
+  horaHTML = document.getElementById("current-time");
   if (horaHTML) {
     horaHTML.innerText = horaFormateada;
   }
