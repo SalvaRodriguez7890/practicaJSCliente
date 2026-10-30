@@ -1,13 +1,179 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>practicacliente</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Socios - Club Deportivo</title>
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+
+  <!--Cabecera -->
+  <header class="tituloPrincipal">
+    <div class="contenidoTitulo">
+      <h1>Club Deportivo - Gestor de Socios</h1>
+      <div class="datetime-container">
+        <p id="current-date" class="date-text">Cargando fecha...</p>
+        <p id="current-time" class="time-text">00:00:00</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="mainPrincipal">
+
+    <!-- Listado de Socios -->
+    <section id="listado-section" class="card">
+      <div class="section-header">
+        <h2>Listado de Socios</h2>
+        <button id="btn-fullscreen" type="button" class="btn btn-secondary">
+          <span class="icon">⛶</span> Pantalla Completa
+        </button>
+      </div>
+
+      <!-- Controles de filtrado y ordenación -->
+      <div class="controlesFiltroSocio">
+        <div class="form-group">
+          <label for="search-input">Buscar socio:</label>
+          <input type="search" id="search-input" placeholder="Nombre, apellidos o email (mín. 2 letras)...">
+        </div>
+
+        <div class="form-group">
+          <label for="filter-activity">Filtrar por actividad:</label>
+          <select id="filter-activity">
+            <option value="todas">Todas las actividades</option>
+            <option value="natación">Natación</option>
+            <option value="yoga">Yoga</option>
+            <option value="pádel">Pádel</option>
+            <option value="musculación">Musculación</option>
+            <option value="spinning">Spinning</option>
+            <option value="pilates">Pilates</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sort-order">Ordenar por:</label>
+          <select id="sort-order">
+            <option value="nombre">Nombre</option>
+            <option value="apellidos">Apellidos</option>
+            <option value="jovenes">Más jóvenes primero</option>
+            <option value="antiguos">Más antiguos primero</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla de Socios -->
+      <div class="divTablaSocios">
+        <table id="members-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Actividades</th>
+              <th>Edad</th>
+              <th>Cuota</th>
+            </tr>
+          </thead>
+          <tbody id="members-tbody">
+            <!-- Filas insertadas dinámicamente con JavaScript -->
+          </tbody>
+        </table>
+        <div id="no-results" class="no-results hidden">No hay socios que coincidan</div>
+      </div>
+    </section>
+
+    <!-- CONTENEDOR DE 3 COLUMNAS: Ficha, Alta y Estadísticas en la MISMA fila -->
+    <div class="grid-three-columns">
+
+      <!-- Ficha de Socio por DNI -->
+      <section class="card">
+        <h2>Ficha de Socio</h2>
+        <form id="form-search-dni" class="search-dni-form">
+          <div class="form-group">
+            <label for="search-dni-input">Buscar socio por DNI:</label>
+            <div class="inline-input-button">
+              <input type="text" id="search-dni-input" placeholder="Ej: 12345678Z" required>
+              <button type="submit" class="btn btn-primary">Buscar</button>
+            </div>
+          </div>
+        </form>
+
+        <div id="member-card-details" class="member-card-container">
+          <p class="placeholder-text">Introduce un DNI válido arriba para consultar la ficha completa del socio.</p>
+        </div>
+      </section>
+
+      <!-- Alta de Socio -->
+      <section class="card">
+        <h2>Alta de Nuevo Socio</h2>
+        <form id="form-add-member" class="form-alta" novalidate>
+          <div class="form-group">
+            <label for="add-nombre">Nombre y Apellidos:</label>
+            <input type="text" id="add-nombre" placeholder="Ej: Lucía Martín Ruiz" required>
+            <span class="error-message" id="error-add-nombre"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="add-dni">DNI:</label>
+            <input type="text" id="add-dni" placeholder="12345678Z" maxlength="9" required>
+            <span class="error-message" id="error-add-dni"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="add-email">Correo Electrónico:</label>
+            <input type="email" id="add-email" placeholder="ejemplo@correo.es" required>
+            <span class="error-message" id="error-add-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="add-telefono">Teléfono:</label>
+            <input type="tel" id="add-telefono" placeholder="612 345 678" required>
+            <span class="error-message" id="error-add-telefono"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="add-fecha-nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="add-fecha-nacimiento" required>
+            <span class="error-message" id="error-add-fecha-nacimiento"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="add-cuota">Cuota Mensual (€):</label>
+            <input type="number" id="add-cuota" min="0" step="0.01" placeholder="35.00" required>
+            <span class="error-message" id="error-add-cuota"></span>
+          </div>
+
+          <div class="form-group">
+            <label>Actividades (marca al menos una):</label>
+            <div class="checkbox-grid">
+              <label><input type="checkbox" name="actividades" value="natación"> Natación</label>
+              <label><input type="checkbox" name="actividades" value="yoga"> Yoga</label>
+              <label><input type="checkbox" name="actividades" value="pádel"> Pádel</label>
+              <label><input type="checkbox" name="actividades" value="musculación"> Musculación</label>
+              <label><input type="checkbox" name="actividades" value="spinning"> Spinning</label>
+              <label><input type="checkbox" name="actividades" value="pilates"> Pilates</label>
+            </div>
+            <span class="error-message" id="error-add-actividades"></span>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-block">Dar de alta socio</button>
+        </form>
+
+        <div id="alta-notification" class="notification hidden"></div>
+      </section>
+
+      <!--  Estadísticas -->
+      <section class="card">
+        <h2>Estadísticas del Club</h2>
+        <div id="stats-container" class="stats-grid">
+          <!-- Rellenado dinámicamente mediante JS -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
 </html>
