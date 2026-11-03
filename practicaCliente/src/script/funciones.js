@@ -1,11 +1,45 @@
 /**
  * Constantes y variables
  */
-
 //Elemento HTML Hora
 const horaHTML = document.getElementById("current-time");
 //ELEMENTO HTML FECHA
 const fechHTML = document.getElementById("current-date");
+
+//lista de socios
+const listaSocios = sociosClubCompleto;
+
+//elemento htm tabla socios
+const tablaSociosHTML = document.getElementById("members-table");
+
+//Elemento de buscar socios (input)
+
+const buscarSocio = document.getElementById("search-input");
+
+
+/**
+ * Llamada funciones
+ */
+
+//Funcion Fecha
+muestraFecha();
+
+//Funcion Hora con setInterval para que se actualice cada segundo
+setInterval(actualizarHora, 1000);
+
+//funcion que recorre el array de socios y los muestra en la tabla del HTML
+muestraSocios();
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  *Funcion que genera la fecha actual de hoy y muestra la hora cada segundo 
@@ -14,7 +48,7 @@ const fechHTML = document.getElementById("current-date");
  function muestraFecha(){
  //saco el elemento que muestra la fecha y la hora en el html que voy a usar
  //dentro de la funcion para actualizar los datos
-fechHTML = document.getElementById("current-date");
+
 
 //creo una constante de la fecha que es ahoram ismo
 const fechaHoy = new Date();
@@ -47,8 +81,7 @@ const fechaHoy = new Date();
   // Unimos todo respetando tu formato exacto
   fechHTML.innerText= `${nombreDia}, ${numeroDia} ${nombreMes} del ${anio}`;
 }
-//llamo a lafuncion para monstrarla
-muestraFecha();
+
 
 /**
  * Función que actualiza la hora actual cada segundo usando toLocaleTimeString
@@ -65,11 +98,135 @@ function actualizarHora() {
     second: '2-digit' 
   });
   
-  horaHTML = document.getElementById("current-time");
   if (horaHTML) {
     horaHTML.innerText = horaFormateada;
   }
 }
-//llamo a lafuncion para monstrarla con un interval con cada segundo
-setInterval(actualizarHora, 1000);
+
+
+/**
+ * Funcion que coge la fecha de nacimineto del socio y devuelve la edad
+ * @param {*} fechaNacimiento 
+ * @returns 
+ */
+function calcularEdad(fechaNacimiento) {
+  const hoy = new Date();
+  const nacimiento = new Date(fechaNacimiento);
+
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const mesActual = hoy.getMonth();
+  const mesNacimiento = nacimiento.getMonth();
+
+  // Comprobamos si aún no ha cumplido años este año
+  if (mesActual < mesNacimiento || (mesActual === mesNacimiento && hoy.getDate() < nacimiento.getDate())) {
+    edad--;
+  }
+
+  return edad;
+}
+
+/**
+ * Funcion que devuelve un string con el la primera letra del nombre y del apellido
+ * @param {*} socio 
+ * @returns 
+ */
+function generaAvatar(socio){
+  return (socio.nombre[0]+socio.apellidos[0]).toUpperCase();
+}
+
+/**
+ * Funcxion que por socio devuelve un string con sus actividades metidos dentro de un p
+ * donde luego en el css se le da estilos
+ * @param {*} socio 
+ * @returns 
+ */
+function generaActividades(socio) {
+  let actividadesHTML = socio.actividades.split(",");
+  let finalString = '<div class="flex-actividades">';
+
+  for(act of actividadesHTML){
+    finalString += `<span class="actividades">${act.trim()}</span>`;
+  }
+  
+  finalString += '</div>';
+  return finalString;
+}
+
+/**
+ * Mediante una expresion regula cambia el email y lo encripta
+ * @param {*} email 
+ * @returns 
+ */
+function escondeMail(email){
+
+  //esa expresion regular cambia a partir de las dos primeras todo por * hasta el @
+  const emailOculto = email.replace(/(?<=^.{2}).*?(?=@)/, (match) => "*".repeat(match.length));
+  return emailOculto;
+}
+
+/**
+ * Función que coje los datos del array del fichero "datos.js" y los muestra en la tabla de socios del HTML
+ * A la fila de actividades le meto un id para luego meterle stylos desde css
+ */
+function muestraSocios(){
+  let fila = "";
+  for(socio of listaSocios){
+    fila += `<tr>` +
+            `<td><span class="spanAvatar">${generaAvatar(socio)}</span></td>` +
+            `<td><b><p class="tdSocio">${socio.nombre} ${socio.apellidos}</p></b></td>` +
+            `<td><b>${socio.id}</b></td>` +
+            `<td>${escondeMail(socio.email)}</td>` +
+            `<td class="tdActividades">${generaActividades(socio)}</td>` +
+            `<td>${calcularEdad(socio.fechaNacimiento)}</td>`+
+            `<td class="tdCuota">${socio.cuota}€</td>` +
+            `</tr>`;
+  }
+  tablaSociosHTML.innerHTML += fila;
+}
+
+/**
+ * Funcion con addEventListener que escucha al input de buscar socio
+ */
+buscarSocio.addEventListener("input", (evento) => {
+
+let textoBuscar = evento.target.value;
+let fila = "";
+
+
+for(socio of listaSocios){
+
+  let nombre = socio.nombre.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
+  let apellidos = socio.apellidos.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
+  let email = socio.email.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
+
+
+
+  if(nombre.includes(textoBuscar.toUpperCase()) 
+    || email.includes(textoBuscar.toUpperCase()) 
+    || apellidos.includes(textoBuscar.toUpperCase())){
+    
+    fila += `<tr>` +
+                `<td><span class="spanAvatar">${generaAvatar(socio)}</span></td>` +
+                `<td><b><p class="tdSocio">${socio.nombre} ${socio.apellidos}</p></b></td>` +
+                `<td><b>${socio.id}</b></td>` +
+                `<td>${escondeMail(socio.email)}</td>` +
+                `<td class="tdActividades">${generaActividades(socio)}</td>` +
+                `<td>${calcularEdad(socio.fechaNacimiento)}</td>`+
+                `<td class="tdCuota">${socio.cuota}€</td>` +
+                `</tr>`;
+    
+  }
+}
+
+ tablaSociosHTML.innerHTML = fila;
+
+}) 
+
+
+
+
+
+
+
+
 

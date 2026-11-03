@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestor de Socios - Club Deportivo</title>
   <link rel="stylesheet" href="./src/css/style.css">
- 
-  <script src="./src/script/datos.js" defer></script>
+  <script src="./src/script/datos.js"></script>
   <script src="./src/script/funciones.js" defer></script>
 </head>
 <body>
@@ -37,7 +36,7 @@
       <div class="controlesFiltroSocio">
         <div class="form-group">
           <label for="search-input">Buscar socio:</label>
-          <input type="search" id="search-input" placeholder="Nombre, apellidos o email (mín. 2 letras)...">
+          <input type="text" id="search-input" placeholder="Nombre, apellidos o email (mín. 2 letras)...">
         </div>
 
         <div class="form-group">
@@ -69,13 +68,16 @@
         <table id="members-table">
           <thead>
             <tr>
+              <th>AVATAR</th>
+              <th>Nombre y Apellidos</th>
               <th>ID</th>
-              <th>Nombre</th>
               <th>Email</th>
               <th>Actividades</th>
               <th>Edad</th>
               <th>Cuota</th>
             </tr>
+
+
           </thead>
           <tbody id="members-tbody">
             <!-- Filas insertadas dinámicamente con JavaScript -->

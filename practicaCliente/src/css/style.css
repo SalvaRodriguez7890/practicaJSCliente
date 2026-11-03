@@ -140,6 +140,12 @@ th, td {
   vertical-align: middle;
 }
 
+/* Añade esto justo debajo para darle aire a la columna de Actividades */
+#members-table th:nth-child(4),
+#members-table td:nth-child(4) {
+  min-width: 190px;
+}
+
 th {
   background-color: #f8fafc;
   font-weight: 600;
@@ -401,3 +407,59 @@ input.input-error {
     text-align: center;
   }
 }
+
+
+
+/* Contenedor de las actividades dentro de la celda */
+/* Celda de actividades de la tabla */
+.tdActividades {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Contenedor interno que fuerza la fila horizontal */
+.flex-actividades {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 4px;
+  align-items: center;
+}
+
+/* Estilo de cada cajita de actividad */
+.actividades {
+  display: inline-block;
+  color: darkblue;
+  background-color: lightblue;
+  border: 1px solid darkblue;
+  border-radius: 7px;
+  text-align: center;
+  font-size: 11px;
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.tdSocio{
+  color: #011238c2;
+}
+
+.tdCuota{
+color: darkblue;
+text-align: right;
+
+}
+
+.spanAvatar {
+  display: inline-flex;       /* Activa flexbox para centrar el contenido */
+  align-items: center;        /* Centra verticalmente */
+  justify-content: center;    /* Centra horizontalmente */
+  width: 40px;                /* Ancho fijo (puedes ajustarlo a tu gusto, ej: 35px, 40px) */
+  height: 40px;               /* Alto fijo (DEBE SER IGUAL AL ANCHO) */
+  border: solid 1px darkblue;
+  border-radius: 50%;         /* Vuelve el cuadrado en un círculo perfecto */
+  color: darkblue;
+  background-color: lightblue;
+  font-size: 16px;            /* Tamaño de la letra ajustado al círculo */
+  box-sizing: border-box;     /* Asegura que el borde no afecte el tamaño total */
+}
+

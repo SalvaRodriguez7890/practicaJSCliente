@@ -10,7 +10,7 @@ const sociosClubCompleto = [
     dni: "54123698H",
     email: "hector.blazquez@correo.es",
     telefono: "612987654",
-    fechaNacimiento: "1994-06-12",
+    fechaNacimiento: "2000-05-30",
     fechaAlta: "2021-02-10",
     actividades: "natación, pádel",
     cuota: 35
