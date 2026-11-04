@@ -1,6 +1,7 @@
 /**
  * Constantes y variables
  */
+
 //Elemento HTML Hora
 const horaHTML = document.getElementById("current-time");
 //ELEMENTO HTML FECHA
@@ -9,8 +10,12 @@ const fechHTML = document.getElementById("current-date");
 //lista de socios
 const listaSocios = sociosClubCompleto;
 
+//lista de socios variable
+
+const listaSociosVar = [];
+
 //elemento htm tabla socios
-const tablaSociosHTML = document.getElementById("members-table");
+const tablaSociosHTML = document.getElementById("members-tbody");
 
 //Elemento de buscar socios (input)
 
@@ -192,21 +197,35 @@ let textoActividad = evento.target.value;
 let fila = "";
 let actividades = [];
 
- for(socio of listaSocios){
+if(textoActividad === "todas"){
 
-  actividades = socio.actividades
+muestraSocios();
 
-  for(act of actividades){
+}else{
+    for(socio of listaSocios){
 
-      if(act.includes(textoActividad)){
-        
-        fila += formatoFila(socio);
-        
+      actividades = socio.actividades.split(",")
+
+      
+      for(let act of actividades){
+
+          if(act.trim().includes(textoActividad)){
+            console.log(act)
+
+            listaSociosVar.push(socio);
+
+            fila += formatoFila(socio);
+
+            
+            
+          }
+
       }
-
   }
-  
+  tablaSociosHTML.innerHTML = "";
+  tablaSociosHTML.innerHTML = fila;
 }
+ 
 
 }) 
 
@@ -215,11 +234,13 @@ let actividades = [];
  * A la fila de actividades le meto un id para luego meterle stylos desde css
  */
 function muestraSocios(){
+
   let fila = "";
   for(socio of listaSocios){
     fila += formatoFila(socio);
   }
-  tablaSociosHTML.innerHTML += fila;
+  tablaSociosHTML.innerHTML = "";
+  tablaSociosHTML.innerHTML = fila;
 }
 
 /**
@@ -231,8 +252,27 @@ buscarSocio.addEventListener("input", (evento) => {
 let textoActividad = evento.target.value;
 let fila = "";
 
+if(listaSociosVar.length != 0){
 
-for(socio of listaSocios){
+  for(socio of listaSociosVar){
+
+    let nombre = socio.nombre.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
+    let apellidos = socio.apellidos.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
+    let email = socio.email.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
+
+
+
+    if(nombre.includes(textoActividad.toUpperCase()) 
+      || email.includes(textoActividad.toUpperCase()) 
+      || apellidos.includes(textoActividad.toUpperCase())){
+      
+      fila += formatoFila(socio);
+      
+    }
+  }
+}else{
+  
+  for(socio of listaSocios){
 
   let nombre = socio.nombre.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
   let apellidos = socio.apellidos.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
@@ -249,15 +289,17 @@ for(socio of listaSocios){
   }
 }
 
+}
+
+ tablaSociosHTML.innerHTML = "";
  tablaSociosHTML.innerHTML = fila;
 
 }) 
 
+//cuando el objeto buscarSocio pierda el foco pues meto la tabla ordeanda
+buscarSocio.addEventListener("blur", (evento) => {
 
 
+muestraSocios();
 
-
-
-
-
-
+})
