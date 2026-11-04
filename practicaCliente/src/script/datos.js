@@ -1,6 +1,6 @@
 /**
- * Array que contiene todos los socios iniales
- * 50 socios
+ * Array que contiene todos los socios iniciales
+ * 50 socios con cuotas con decimales variados
  */
 const sociosClubCompleto = [
   {
@@ -13,7 +13,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2000-05-30",
     fechaAlta: "2021-02-10",
     actividades: "natación, pádel",
-    cuota: 35
+    cuota: 35.50
   },
   {
     id: "SOC-0002",
@@ -25,7 +25,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2001-09-18",
     fechaAlta: "2022-04-15",
     actividades: "yoga, pilates",
-    cuota: 30
+    cuota: 30.25
   },
   {
     id: "SOC-0003",
@@ -37,7 +37,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1985-11-25",
     fechaAlta: "2018-08-20",
     actividades: "musculación, spinning",
-    cuota: 40
+    cuota: 40.80
   },
   {
     id: "SOC-0004",
@@ -49,7 +49,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1999-03-04",
     fechaAlta: "2023-01-11",
     actividades: "natación",
-    cuota: 25
+    cuota: 25.99
   },
   {
     id: "SOC-0005",
@@ -61,7 +61,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1980-07-19",
     fechaAlta: "2016-05-14",
     actividades: "pádel, musculación",
-    cuota: 40
+    cuota: 40.50
   },
   {
     id: "SOC-0006",
@@ -73,7 +73,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1997-12-08",
     fechaAlta: "2021-09-01",
     actividades: "pilates, yoga, natación",
-    cuota: 50
+    cuota: 50.20
   },
   {
     id: "SOC-0007",
@@ -85,7 +85,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1992-02-28",
     fechaAlta: "2019-11-22",
     actividades: "spinning",
-    cuota: 28
+    cuota: 28.75
   },
   {
     id: "SOC-0008",
@@ -97,7 +97,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2004-05-15",
     fechaAlta: "2024-02-05",
     actividades: "natación, yoga",
-    cuota: 35
+    cuota: 35.15
   },
   {
     id: "SOC-0009",
@@ -109,7 +109,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1983-10-02",
     fechaAlta: "2015-06-18",
     actividades: "musculación",
-    cuota: 30
+    cuota: 30.90
   },
   {
     id: "SOC-0010",
@@ -121,7 +121,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1990-08-11",
     fechaAlta: "2020-03-30",
     actividades: "pádel, spinning",
-    cuota: 38
+    cuota: 38.40
   },
   {
     id: "SOC-0011",
@@ -133,7 +133,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1988-04-21",
     fechaAlta: "2017-12-12",
     actividades: "natación, pilates",
-    cuota: 35
+    cuota: 35.60
   },
   {
     id: "SOC-0012",
@@ -145,7 +145,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1996-01-30",
     fechaAlta: "2022-07-09",
     actividades: "yoga",
-    cuota: 25
+    cuota: 25.30
   },
   {
     id: "SOC-0013",
@@ -157,7 +157,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1979-09-14",
     fechaAlta: "2014-04-19",
     actividades: "musculación, pádel, spinning",
-    cuota: 55
+    cuota: 55.50
   },
   {
     id: "SOC-0014",
@@ -169,7 +169,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2002-06-07",
     fechaAlta: "2023-08-25",
     actividades: "pilates",
-    cuota: 25
+    cuota: 25.10
   },
   {
     id: "SOC-0015",
@@ -181,7 +181,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1993-11-03",
     fechaAlta: "2019-01-16",
     actividades: "natación, musculación",
-    cuota: 40
+    cuota: 40.25
   },
   {
     id: "SOC-0016",
@@ -193,7 +193,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1986-03-22",
     fechaAlta: "2018-10-04",
     actividades: "yoga, spinning",
-    cuota: 38
+    cuota: 38.99
   },
   {
     id: "SOC-0017",
@@ -205,7 +205,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1991-05-17",
     fechaAlta: "2020-12-01",
     actividades: "pádel",
-    cuota: 28
+    cuota: 28.50
   },
   {
     id: "SOC-0018",
@@ -217,7 +217,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1998-10-29",
     fechaAlta: "2022-03-14",
     actividades: "natación, yoga",
-    cuota: 35
+    cuota: 35.75
   },
   {
     id: "SOC-0019",
@@ -229,7 +229,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1984-12-05",
     fechaAlta: "2016-09-20",
     actividades: "musculación, pilates",
-    cuota: 38
+    cuota: 38.20
   },
   {
     id: "SOC-0020",
@@ -241,7 +241,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2000-02-13",
     fechaAlta: "2021-06-18",
     actividades: "spinning, natación",
-    cuota: 38
+    cuota: 38.45
   },
   {
     id: "SOC-0021",
@@ -253,7 +253,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1995-07-24",
     fechaAlta: "2021-10-09",
     actividades: "yoga, pádel",
-    cuota: 35
+    cuota: 35.80
   },
   {
     id: "SOC-0022",
@@ -265,7 +265,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1982-04-16",
     fechaAlta: "2015-02-11",
     actividades: "musculación",
-    cuota: 30
+    cuota: 30.15
   },
   {
     id: "SOC-0023",
@@ -277,7 +277,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1993-08-31",
     fechaAlta: "2019-05-23",
     actividades: "pilates, natación",
-    cuota: 35
+    cuota: 35.90
   },
   {
     id: "SOC-0024",
@@ -289,7 +289,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1987-01-09",
     fechaAlta: "2017-07-15",
     actividades: "spinning, pádel",
-    cuota: 38
+    cuota: 38.30
   },
   {
     id: "SOC-0025",
@@ -301,7 +301,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1996-09-20",
     fechaAlta: "2022-11-30",
     actividades: "yoga, pilates, musculación",
-    cuota: 48
+    cuota: 48.50
   },
   {
     id: "SOC-0026",
@@ -313,7 +313,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1990-05-14",
     fechaAlta: "2020-04-12",
     actividades: "natación, spinning",
-    cuota: 35
+    cuota: 35.25
   },
   {
     id: "SOC-0027",
@@ -325,7 +325,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1995-10-30",
     fechaAlta: "2021-08-19",
     actividades: "yoga, pilates",
-    cuota: 30
+    cuota: 30.75
   },
   {
     id: "SOC-0028",
@@ -337,7 +337,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1983-02-18",
     fechaAlta: "2017-03-05",
     actividades: "musculación, pádel",
-    cuota: 40
+    cuota: 40.60
   },
   {
     id: "SOC-0029",
@@ -349,7 +349,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2001-12-04",
     fechaAlta: "2023-02-14",
     actividades: "natación",
-    cuota: 25
+    cuota: 25.40
   },
   {
     id: "SOC-0030",
@@ -361,7 +361,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1978-07-22",
     fechaAlta: "2015-11-20",
     actividades: "spinning, musculación",
-    cuota: 40
+    cuota: 40.99
   },
   {
     id: "SOC-0031",
@@ -373,7 +373,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1992-04-11",
     fechaAlta: "2019-09-10",
     actividades: "pilates, yoga, natación",
-    cuota: 50
+    cuota: 50.50
   },
   {
     id: "SOC-0032",
@@ -385,7 +385,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1989-08-15",
     fechaAlta: "2018-01-25",
     actividades: "pádel",
-    cuota: 28
+    cuota: 28.20
   },
   {
     id: "SOC-0033",
@@ -397,7 +397,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2003-03-09",
     fechaAlta: "2024-01-15",
     actividades: "natación, yoga",
-    cuota: 35
+    cuota: 35.85
   },
   {
     id: "SOC-0034",
@@ -409,7 +409,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1986-11-27",
     fechaAlta: "2016-06-11",
     actividades: "musculación",
-    cuota: 30
+    cuota: 30.30
   },
   {
     id: "SOC-0035",
@@ -421,7 +421,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1994-01-19",
     fechaAlta: "2021-05-30",
     actividades: "spinning, pádel",
-    cuota: 38
+    cuota: 38.75
   },
   {
     id: "SOC-0036",
@@ -433,7 +433,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1981-06-03",
     fechaAlta: "2014-09-12",
     actividades: "natación, pilates",
-    cuota: 35
+    cuota: 35.10
   },
   {
     id: "SOC-0037",
@@ -445,7 +445,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1998-09-14",
     fechaAlta: "2022-10-02",
     actividades: "yoga",
-    cuota: 25
+    cuota: 25.99
   },
   {
     id: "SOC-0038",
@@ -457,7 +457,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1987-12-25",
     fechaAlta: "2019-04-18",
     actividades: "musculación, pádel, spinning",
-    cuota: 55
+    cuota: 55.25
   },
   {
     id: "SOC-0039",
@@ -469,7 +469,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "2000-04-08",
     fechaAlta: "2023-06-20",
     actividades: "pilates",
-    cuota: 25
+    cuota: 25.50
   },
   {
     id: "SOC-0040",
@@ -481,7 +481,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1991-03-31",
     fechaAlta: "2020-01-22",
     actividades: "natación, musculación",
-    cuota: 40
+    cuota: 40.80
   },
   {
     id: "SOC-0041",
@@ -493,7 +493,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1985-07-16",
     fechaAlta: "2018-07-09",
     actividades: "yoga, spinning",
-    cuota: 38
+    cuota: 38.15
   },
   {
     id: "SOC-0042",
@@ -505,7 +505,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1996-02-12",
     fechaAlta: "2021-11-14",
     actividades: "pádel",
-    cuota: 28
+    cuota: 28.90
   },
   {
     id: "SOC-0043",
@@ -517,7 +517,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1984-10-05",
     fechaAlta: "2016-12-01",
     actividades: "natación, yoga",
-    cuota: 35
+    cuota: 35.40
   },
   {
     id: "SOC-0044",
@@ -529,7 +529,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1999-05-21",
     fechaAlta: "2022-09-19",
     actividades: "musculación, pilates",
-    cuota: 38
+    cuota: 38.60
   },
   {
     id: "SOC-0045",
@@ -541,7 +541,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1982-08-17",
     fechaAlta: "2015-08-15",
     actividades: "spinning, natación",
-    cuota: 38
+    cuota: 38.25
   },
   {
     id: "SOC-0046",
@@ -553,7 +553,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1993-11-28",
     fechaAlta: "2020-07-11",
     actividades: "yoga, pádel",
-    cuota: 35
+    cuota: 35.75
   },
   {
     id: "SOC-0047",
@@ -565,7 +565,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1988-01-06",
     fechaAlta: "2017-10-04",
     actividades: "musculación",
-    cuota: 30
+    cuota: 30.50
   },
   {
     id: "SOC-0048",
@@ -577,7 +577,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1997-06-23",
     fechaAlta: "2021-03-22",
     actividades: "pilates, natación",
-    cuota: 35
+    cuota: 35.99
   },
   {
     id: "SOC-0049",
@@ -589,7 +589,7 @@ const sociosClubCompleto = [
     fechaNacimiento: "1990-09-15",
     fechaAlta: "2019-12-18",
     actividades: "spinning, pádel",
-    cuota: 38
+    cuota: 38.30
   },
   {
     id: "SOC-0050",
@@ -601,6 +601,6 @@ const sociosClubCompleto = [
     fechaNacimiento: "2002-04-10",
     fechaAlta: "2023-11-05",
     actividades: "yoga, pilates, musculación",
-    cuota: 48
+    cuota: 48.75
   }
 ];

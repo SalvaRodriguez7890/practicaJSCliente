@@ -164,6 +164,20 @@ function escondeMail(email){
   return emailOculto;
 }
 
+function formatoFila(socio){
+  let fila = "";
+  fila = `<tr>` +
+            `<td><span class="spanAvatar">${generaAvatar(socio)}</span></td>` +
+            `<td><b><p class="tdSocio">${socio.nombre} ${socio.apellidos}</p></b></td>` +
+            `<td><b>${socio.id}</b></td>` +
+            `<td>${escondeMail(socio.email)}</td>` +
+            `<td class="tdActividades">${generaActividades(socio)}</td>` +
+            `<td>${calcularEdad(socio.fechaNacimiento)}</td>`+
+            `<td class="tdCuota">${socio.cuota.toFixed(2)}€</td>` +
+            `</tr>`;
+  return fila;
+}
+
 /**
  * Función que coje los datos del array del fichero "datos.js" y los muestra en la tabla de socios del HTML
  * A la fila de actividades le meto un id para luego meterle stylos desde css
@@ -171,15 +185,7 @@ function escondeMail(email){
 function muestraSocios(){
   let fila = "";
   for(socio of listaSocios){
-    fila += `<tr>` +
-            `<td><span class="spanAvatar">${generaAvatar(socio)}</span></td>` +
-            `<td><b><p class="tdSocio">${socio.nombre} ${socio.apellidos}</p></b></td>` +
-            `<td><b>${socio.id}</b></td>` +
-            `<td>${escondeMail(socio.email)}</td>` +
-            `<td class="tdActividades">${generaActividades(socio)}</td>` +
-            `<td>${calcularEdad(socio.fechaNacimiento)}</td>`+
-            `<td class="tdCuota">${socio.cuota}€</td>` +
-            `</tr>`;
+    fila += formatoFila(socio);
   }
   tablaSociosHTML.innerHTML += fila;
 }
@@ -205,15 +211,7 @@ for(socio of listaSocios){
     || email.includes(textoBuscar.toUpperCase()) 
     || apellidos.includes(textoBuscar.toUpperCase())){
     
-    fila += `<tr>` +
-                `<td><span class="spanAvatar">${generaAvatar(socio)}</span></td>` +
-                `<td><b><p class="tdSocio">${socio.nombre} ${socio.apellidos}</p></b></td>` +
-                `<td><b>${socio.id}</b></td>` +
-                `<td>${escondeMail(socio.email)}</td>` +
-                `<td class="tdActividades">${generaActividades(socio)}</td>` +
-                `<td>${calcularEdad(socio.fechaNacimiento)}</td>`+
-                `<td class="tdCuota">${socio.cuota}€</td>` +
-                `</tr>`;
+     fila += formatoFila(socio);
     
   }
 }
