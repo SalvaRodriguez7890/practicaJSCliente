@@ -190,20 +190,23 @@ buscarActividad.addEventListener("input", (evento) => {
 
 let textoActividad = evento.target.value;
 let fila = "";
+let actividades = [];
 
+ for(socio of listaSocios){
 
-for(socio of listaSocios){
+  actividades = socio.actividades
 
-  if(nombre.includes(textoActividad.toUpperCase()) 
-    || email.includes(textoActividad.toUpperCase()) 
-    || apellidos.includes(textoActividad.toUpperCase())){
-    
-     fila += formatoFila(socio);
-    
+  for(act of actividades){
+
+      if(act.includes(textoActividad)){
+        
+        fila += formatoFila(socio);
+        
+      }
+
   }
+  
 }
-
- tablaSociosHTML.innerHTML = fila;
 
 }) 
 
