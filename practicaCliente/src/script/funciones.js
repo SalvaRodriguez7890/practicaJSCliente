@@ -16,6 +16,10 @@ const tablaSociosHTML = document.getElementById("members-table");
 
 const buscarSocio = document.getElementById("search-input");
 
+//Elemento de buscar actividades (desplegable)
+
+const buscarActividad = document.getElementById("filter-activity");
+
 
 /**
  * Llamada funciones
@@ -179,6 +183,31 @@ function formatoFila(socio){
 }
 
 /**
+ * Que siempre escucha al desplegable de actividades y actualiza la lista
+ * @param {*} actividad 
+ */
+buscarActividad.addEventListener("input", (evento) => {
+
+let textoActividad = evento.target.value;
+let fila = "";
+
+
+for(socio of listaSocios){
+
+  if(nombre.includes(textoActividad.toUpperCase()) 
+    || email.includes(textoActividad.toUpperCase()) 
+    || apellidos.includes(textoActividad.toUpperCase())){
+    
+     fila += formatoFila(socio);
+    
+  }
+}
+
+ tablaSociosHTML.innerHTML = fila;
+
+}) 
+
+/**
  * Función que coje los datos del array del fichero "datos.js" y los muestra en la tabla de socios del HTML
  * A la fila de actividades le meto un id para luego meterle stylos desde css
  */
@@ -191,11 +220,12 @@ function muestraSocios(){
 }
 
 /**
- * Funcion con addEventListener que escucha al input de buscar socio
+ * Funcion con addEventListener que escucha al input de buscar socio y realiza al busqueda 
+ * actualizando la tabla
  */
 buscarSocio.addEventListener("input", (evento) => {
 
-let textoBuscar = evento.target.value;
+let textoActividad = evento.target.value;
 let fila = "";
 
 
@@ -207,9 +237,9 @@ for(socio of listaSocios){
 
 
 
-  if(nombre.includes(textoBuscar.toUpperCase()) 
-    || email.includes(textoBuscar.toUpperCase()) 
-    || apellidos.includes(textoBuscar.toUpperCase())){
+  if(nombre.includes(textoActividad.toUpperCase()) 
+    || email.includes(textoActividad.toUpperCase()) 
+    || apellidos.includes(textoActividad.toUpperCase())){
     
      fila += formatoFila(socio);
     
