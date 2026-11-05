@@ -4,6 +4,9 @@
 const horaHTML = document.getElementById("current-time");
 const fechHTML = document.getElementById("current-date");
 
+//section que luego ponemos en pantalla completa
+const seccion = document.getElementById('listado-section');
+
 // Lista original completa de socios
 const listaSocios = sociosClubCompleto;
 
@@ -24,6 +27,8 @@ muestraFecha();
 setInterval(actualizarHora, 1000);
 //llamada para mostrar la lista de socios
 muestraSocios(listaSocios); 
+//EventListener del boton que pone a pantalla completa la app
+document.getElementById('btn-fullscreen').addEventListener('click', appCompleta);
 
 /**
  * Mega funcion, que tiene en cuenta lo que escribimos en el buscador y el filtro por actividad y orden
@@ -76,7 +81,6 @@ function filtrarYMostrarSocios() {
     //Si el socio pasa el filtro de la actividad, sigo con el filtro de texto, si no pues termino
     if (pasaActividad) {
         
-
     //Creo una variable boleana para saber ahora y filtrar por el texto
     let pasaTexto = true;
 
@@ -205,24 +209,30 @@ function ordenaViejo(array){
 }
 
 /**
- * Función que coge los datos de un array de socios y los muestra en la tabla del HTML.
- * @param {Array} arraySocios - Lista de socios que queremos pintar en la tabla.
+ * Función que coge los datos de un array de socios y los muestra en la tabla del HTML usando nodos y appendChild.
+ * @param {Array} arraySocios Lista de socios que queremos pintar en la tabla.
  */
 function muestraSocios(arraySocios) {
-  let fila = "";
-  
-  // Recorro el array y monto las filas llamando a la funcion de formatoFila
-  for (let socio of arraySocios) {
-    fila += formatoFila(socio);
-  }
+  //Nada mas entrar borro lo que haya dentro de la tabla con el .replaceChildren() (borra todo lo que tenga dentro (hijos))
+  tablaSociosHTML.replaceChildren();
 
-  //si la fila esta vacia significa que no hay sociios con los filtros puestos
-  if(fila == ""){
-    tablaSociosHTML.innerHTML = "No se han encontrado socios con esos filtros";
-  }else{
-  // Limpia el contenido anterior de la tabla y le inserta las nuevas filas generadas
-    tablaSociosHTML.innerHTML = "";
-    tablaSociosHTML.innerHTML = fila;
+  // Si no hay socios, mostramos el mensaje de que no se han encontrado
+  if (arraySocios.length === 0) {
+    let filaVacia = createNode("tr", "", "", "");
+    let celdaVacia = createNode("td", "No se han encontrado socios con esos filtros", "", "");
+    //Con la propiedad .colSpan le digo que esa celda ocupe las 6 columnas
+    celdaVacia.colSpan = 6;
+    //sinserto la celda vacia dentro de la fila
+    filaVacia.appendChild(celdaVacia);
+    //añado la fila a la tabla
+    tablaSociosHTML.appendChild(filaVacia);
+    //como no se han encontrado socios pues hago un return para salir
+    return;
+  }
+  
+  // Recorro el array y voy añadiendo cada fila generada con nodos a la tabla
+  for (let socio of arraySocios) {
+    tablaSociosHTML.appendChild(formatoFila(socio));
   }
 }
 
@@ -307,20 +317,26 @@ function generaAvatar(socio){
 }
 
 /**
- * Funcion que genera el campo de las actividades que meto en la tabla (con su clase que tiene sus estilos en css)
+ * Funcion que genera el campo de las actividades usando nodos y appendChild
  * @param {*} socio 
- * @returns 
+ * @returns Elemento div con las actividades
  */
 function generaActividades(socio) {
+  //parto las actividades con el split y genero un array
   let actividadesHTML = socio.actividades.split(",");
-  let finalString = '<div class="flex-actividades">';
 
+  // Creo un div con la clase flex-actividades
+  let contenedorDiv = createNode("div", "", "", "flex-actividades");
+
+  //recorro el array de actividades dodne voy creando un nodo por actividad de
+  //tipo span
   for(let act of actividadesHTML){
-    finalString += `<span class="actividades">${act.trim()}</span>`;
+    // Creamos cada span de actividad y lo añadimos al div 
+    let spanAct = createNode("span", act.trim(), "", "actividades");
+    contenedorDiv.appendChild(spanAct);
   }
-  
-  finalString += '</div>';
-  return finalString;
+  //devuelvo todo el div con sus actividades
+  return contenedorDiv;
 }
 
 /**
@@ -334,18 +350,105 @@ function escondeMail(email){
 }
 
 /**
- * Funcion que contiene el formato de cada fila pasandole el socio, (la tuve que hacer porque repetia muchas veces lo mismo)
+ * Funcion que contiene el formato de cada fila construida mediante nodos y appendChild
  * @param {*} socio 
  * @returns 
  */
 function formatoFila(socio){
-  return `<tr>` +
-            `<td><span class="spanAvatar">${generaAvatar(socio)}</span></td>` +
-            `<td><b><p class="tdSocio">${socio.nombre} ${socio.apellidos}</p></b></td>` +
-            `<td><b>${socio.id}</b></td>` +
-            `<td>${escondeMail(socio.email)}</td>` +
-            `<td class="tdActividades">${generaActividades(socio)}</td>` +
-            `<td>${calcularEdad(socio.fechaNacimiento)}</td>`+
-            `<td class="tdCuota">${socio.cuota.toFixed(2)}€</td>` +
-         `</tr>`;
+
+  //creo la fila
+  let fila = createNode("tr", "", "", "");
+  
+  //Creo la celda del avatar
+  let avatar = createNode("td", "", "", "");
+  //a su vez creo el span del avatar con su clase que va dentro de la celda avatar
+  let spanAvatar = createNode("span", generaAvatar(socio), "", "spanAvatar");
+  //añado el avatar a su celda
+  avatar.appendChild(spanAvatar);
+
+  //Nombre y Apellidos (con negrita <b> y párrafo)
+  //creo la celda para meter el nombre del socio y a la vez creo dos nodos mas para negrita y para decirle que su n tipo p
+    let nombreSocio = createNode("td", "", "", "");
+  let bNombre = createNode("b", "", "", "");
+  let pNombre = createNode("p", `${socio.nombre} ${socio.apellidos}`, "", "tdSocio");
+
+  //añado el texto (p) del nombre a la negrita
+  bNombre.appendChild(pNombre);
+  //a la celda del nombre le añado la negrita que ya tiene el texto
+  nombreSocio.appendChild(bNombre);
+
+  //Creo la celda del id
+  let idSocio = createNode("td", "", "", "");
+  //como el id esta en negrita tambien creo una para negrita
+  let bId = createNode("b", String(socio.id), "", "");
+  //meto dentro de la celda del id el id en negrita
+  idSocio.appendChild(bId);
+
+  //Actividades (recibe el elemento DOM devuelto por generaActividades)
+  //creo mi celda para actividades
+  let actividadesSocio = createNode("td", "", "", "tdActividades");
+  //centro de las actividades le meto las actividades que se hacen en generaActividades())
+  actividadesSocio.appendChild(generaActividades(socio));
+
+  //Ahora la edad, como es solo un string del numero llamo a la funcion que devuelve el numero de la edad a 
+  //partir de la fecha de nacimiento
+  let edadSocio = createNode("td", String(calcularEdad(socio.fechaNacimiento)), "", "");
+
+  //La cuota es migual que la edad, pero le meto un toFixed 2 para que me respete los decimales
+  let cuotaSocio = createNode("td", `${socio.cuota.toFixed(2)}€`, "", "tdCuota");
+
+  //Ahora todas las  celdas creadas las meto en lafila
+  fila.appendChild(avatar);  
+  fila.appendChild(nombreSocio);  
+  fila.appendChild(idSocio);  
+  fila.appendChild(actividadesSocio);  
+  fila.appendChild(edadSocio);  
+  fila.appendChild(cuotaSocio);  
+
+  //devuelvo el objeto fila con todas sus celdas
+  return fila;
+}
+
+/**
+ * Funcion para poner el section de la aplicacion principal en fullscreen
+ */
+function appCompleta() {
+   if (document.fullscreenElement) {
+    document.exitFullscreen();
+  } else {
+   seccion.requestFullscreen();
+  }
+}
+
+/**
+ * Funcion que crea nodos con clases
+ * @param string tipo
+ * @param string texto
+ * @param string id
+ * @param string clase
+ * @return node o null si no se crea el nodo
+ * 
+ */
+function createNode(tipo, texto, id, clase){
+    let elemento = null;
+
+   if((tipo) && (typeof tipo === "string")){
+   elemento = document.createElement(tipo);
+   } else{
+    return null;
+   }
+   
+   if((texto != "")&& (typeof texto === "string")){
+    let elementoText = document.createTextNode(texto);
+    elemento.appendChild(elementoText);
+   }
+
+   if(id != ""){
+    elemento.id = id;
+   }
+   if(clase && typeof clase =="string" && clase != ""){
+    elemento.className = clase;
+   }
+
+   return elemento;
 }
