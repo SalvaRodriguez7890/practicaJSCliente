@@ -384,6 +384,10 @@ function formatoFila(socio){
   //meto dentro de la celda del id el id en negrita
   idSocio.appendChild(bId);
 
+  //creo la celda del mail, dentro del texto llamo a la funcion que esconde el mail
+  let mailSocio = createNode("td", escondeMail(socio.email), "", "");
+  
+
   //Actividades (recibe el elemento DOM devuelto por generaActividades)
   //creo mi celda para actividades
   let actividadesSocio = createNode("td", "", "", "tdActividades");
@@ -401,6 +405,7 @@ function formatoFila(socio){
   fila.appendChild(avatar);  
   fila.appendChild(nombreSocio);  
   fila.appendChild(idSocio);  
+  fila.appendChild(mailSocio); 
   fila.appendChild(actividadesSocio);  
   fila.appendChild(edadSocio);  
   fila.appendChild(cuotaSocio);  
