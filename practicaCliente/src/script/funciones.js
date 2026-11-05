@@ -16,13 +16,18 @@ const tablaSociosHTML = document.getElementById("members-tbody");
 const buscarSocio = document.getElementById("search-input");
 const buscarActividad = document.getElementById("filter-activity");
 const desplegableOrdenacion = document.getElementById("sort-order");
+const buscaFicha = document.getElementById("search-dni-input");
+const divFormularioFicha = document.getElementById("member-card-details");
+const btnFicha = document.getElementById('btnBuscaFicha');
+
+
 
 /**
  * Llamada funciones iniciales
  */
 
 //funcionFecha
-muestraFecha();
+muestraFecha(new Date());
 //funcion que actualiza la hora dentro de un interval
 setInterval(actualizarHora, 1000);
 //llamada para mostrar la lista de socios
@@ -85,7 +90,7 @@ function filtrarYMostrarSocios() {
     let pasaTexto = true;
 
     //Si hay algo escrito, osea es diferente de cadena vacia
-    if (textoBusqueda != "") {
+    if (textoBusqueda != "" && textoBusqueda.length >= 2) {
 
       //Pongo el nombre en mayusculas y sin tildes
       let nombre = socio.nombre.toUpperCase().replaceAll("[ÁÉÍÓÚ]","[AEIOU]");
@@ -256,12 +261,21 @@ desplegableOrdenacion.addEventListener("change", () => {
   filtrarYMostrarSocios();
 });
 
+// Escucha cambios en el buscador de fichas por id
+btnFicha.addEventListener("click", () => {
+  //para esconder el elemento que dice que metamos el dni
+  document.getElementById("textoIntroduceDNI").hidden=true;
+  fichaSocio();
+});
+
+
+
 
 /**
  * Funciones auxiliares para la hora y fecha etc
  */
-function muestraFecha(){
-  const fechaHoy = new Date();
+function muestraFecha(fechaHoy){
+  
   const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
   const mesesAnio = ['de Enero', 'de Febrero', 'de Marzo', 'de Abril', 'de Mayo', 'de Junio', 'de Julio', 'de Agosto', 'de Septiembre', 'de Octubre', 'de Noviembre', 'de Diciembre'];
 
@@ -424,6 +438,134 @@ function appCompleta() {
    seccion.requestFullscreen();
   }
 }
+
+
+/**
+ * 
+ * 3.3 Ficha de socio
+1. Se insertará un pequeño formulario que nos permita obtener la ficha de un socio por su DNI, se
+mostrará:
+o Nombre completo e id.
+o DNI.
+o Email completo y su dominio: (dominio: correo.es).
+o Teléfono agrupado de 3 en 3: 612 345 678.
+o Fecha de nacimiento en texto y edad: martes, 14 de marzo de 1995 · 31 años.
+o Fecha de alta en formato dd/mm/aaaa y días que lleva en el club.
+o Días que faltan para su próximo cumpleaños.
+o
+Actividades y cuota mensual.
+2.
+La búsqueda por DNI no distingue mayúsculas (12345678z también vale).
+3.
+Si el DNI no corresponde a ningún socio, aparece un mensaje de error en la ficha.
+ */
+
+
+
+function fichaSocio(){
+  //buscaFicha.value es el dni que se supone que hemos metido en el input
+  let dni = buscaFicha.value;
+  //inicializo el socioEncontrado a null.
+  let socioEncontrado = null;
+
+  if(buscaFicha.value != ""){
+
+    //entro en un bucle de la lista de socios original y y voy buscando por DNI
+    for(let soc of listaSocios){
+      //el método compare devuelve -1 o 1 para saber que string alfabeticamente va primero, pero si devuelve 0 significa que son el mismo string
+      if(soc.dni.localeCompare(dni) == 0){
+        socioEncontrado = soc;
+        break;//pongo un break para que se salga del bucle porque ya encontró al socio con ese dni
+      }
+    }
+
+    //si el socioEncontrado es diferente de null pues creo el formulario con los datos
+    if(socioEncontrado != "null"){
+     
+        //Creo un salto de linea que despues voy metiendo
+        let br = createNode("br","","","");
+
+        //Creo la parte nombre
+        let labelNombre= createNode("label", "Nombre: ", "", "");
+        let inputNombre= createNode("input", "", "", "");
+        inputNombre.value = socioEncontrado.nombre;
+       
+        //Creo la parte ID
+        let labelID= createNode("label", "ID: ", "", "");
+        let inputID= createNode("input", "", "", "");
+        inputID.value = socioEncontrado.id;
+
+        //Creo la parte mail
+        let labelEmail= createNode("label", "Email: ", "", "");
+        let inputEmail= createNode("input", "", "", "");
+        inputEmail.value = socioEncontrado.email;
+
+        //el domiinio lo saco a partir de hacer un split con el @
+        //como se crea un array de dos celdas 0 y 1, se que en la parte del 1
+        // está el dominio
+        let partesEmail = socioEncontrado.email.split("@");
+        let labelDominio = createNode("label","Dominio: " + partesEmail[1],"","");
+        
+        //Para mostrar el telefono uso el match, el cual mediante una expreision regular le digo que agrupe de 1 a 3 caracteres y con el .join los uno con un esapcio
+        //Con {1,3} le digo que cree 1 grupo de 3 caracteres y con la g que siga adelante y cree otro gurpo con los otros caracteres que se vaya encontrando.
+        //match me devuelve un array con los numeros separados en 3 y el .join une ese array en una sola variable con los espacios
+        let telefonoFormateado = (socioEncontrado.telefono).match(/.{1,3}/g).join(' ');
+        let labelNumero = createNode("label","Numero: ","","");
+        let inputNumero = createNode("input", "", "", "");
+        inputNumero.value = telefonoFormateado;
+        
+        //Fecha de nacimiento
+        let labelFechaNac = createNode("labe", "Fecha de Nacimiento: ");
+        let inputFechaNac = createNode("input", "","","" );
+        inputFechaNac.value = creaFechaNac(new Date(socioEncontrado.fechaNacimiento)) + " " +calcularEdad(socioEncontrado.fechaNacimiento);
+        
+        
+
+
+      divFormularioFicha.appendChild(labelNombre);
+      divFormularioFicha.appendChild(inputNombre);
+      divFormularioFicha.appendChild(labelID);      
+      divFormularioFicha.appendChild(inputID);
+      divFormularioFicha.appendChild(br)
+      divFormularioFicha.appendChild(labelEmail);      
+      divFormularioFicha.appendChild(inputEmail);
+      divFormularioFicha.appendChild(labelDominio);
+      divFormularioFicha.appendChild(br)
+      divFormularioFicha.appendChild(labelNumero);
+      divFormularioFicha.appendChild(inputNumero);
+      divFormularioFicha.appendChild(br);
+      divFormularioFicha.appendChild(labelFechaNac);
+      divFormularioFicha.appendChild(inputFechaNac);
+    }
+    
+  }
+
+}
+
+
+function creaFechaNac(fecha){
+
+
+
+  let diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  let mesesAnio = ['de Enero', 'de Febrero', 'de Marzo', 'de Abril', 'de Mayo', 'de Junio', 'de Julio', 'de Agosto', 'de Septiembre', 'de Octubre', 'de Noviembre', 'de Diciembre'];
+
+  let nombreDia = diasSemana[fecha.getDay()];
+  let numeroDia = fecha.getDate();
+  let nombreMes = mesesAnio[fecha.getMonth()];
+  let anio = fecha.getFullYear();
+  
+  return `${nombreDia}, ${numeroDia} ${nombreMes} del ${anio}`;
+}
+
+
+
+
+
+
+
+
+
 
 /**
  * Funcion que crea nodos con clases
