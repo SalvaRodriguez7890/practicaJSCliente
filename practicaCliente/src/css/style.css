@@ -463,3 +463,46 @@ text-align: right;
   box-sizing: border-box;     /* Asegura que el borde no afecte el tamaño total */
 }
 
+/* ==========================================================================
+   ESTILOS PARA LA FICHA DE SOCIO (INSERCIÓN DINÁMICA)
+   ========================================================================== */
+.ficha-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.ficha-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #f8fafc;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+}
+
+.ficha-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(1, 18, 56, 0.15);
+  background-color: #ffffff;
+}
+
+.ficha-actividades-container {
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.ficha-placeholder {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1.5rem;
+  font-style: italic;
+}

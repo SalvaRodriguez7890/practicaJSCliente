@@ -461,134 +461,123 @@ Si el DNI no corresponde a ningún socio, aparece un mensaje de error en la fich
  */
 
 
-
+/**
+ * Funcion que crea e inserta la ficha de los socios segun el DNI que se le pasa
+ */
 function fichaSocio(){
-  //buscaFicha.value es el dni que se supone que hemos metido en el input
+  // buscaFicha.value es el dni que se supone que hemos metido en el input
   let dni = buscaFicha.value;
-  //inicializo el socioEncontrado a null.
+  // inicializo el socioEncontrado a null.
   let socioEncontrado = null;
-  //pregunto si el nodo tieen algo dentro, si tiene lo borro
+  // pregunto si el nodo tiene algo dentro, si tiene lo borro
   if (divFormularioFicha.hasChildNodes()) {
     divFormularioFicha.replaceChildren();
-
   }
   
-
   if(buscaFicha.value != ""){
 
-    //entro en un bucle de la lista de socios original y y voy buscando por DNI
+    // entro en un bucle de la lista de socios original y voy buscando por DNI
     for(let soc of listaSocios){
-      //el método compare devuelve -1 o 1 para saber que string alfabeticamente va primero, pero si devuelve 0 significa que son el mismo string
       if(soc.dni.localeCompare(dni) == 0){
         socioEncontrado = soc;
-        break;//pongo un break para que se salga del bucle porque ya encontró al socio con ese dni
+        break; // salgo del bucle porque ya encontró al socio
       }
     }
 
-    //si el socioEncontrado es diferente de null pues creo el formulario con los datos
+    // si el socioEncontrado es diferente de null creo el formulario con los datos
     if(socioEncontrado != null){
      
-        //Creo un salto de linea que despues voy metiendo
-        let br = createNode("br","","","");
+        // Creo un salto de línea
+        let br = createNode("br", "", "", "");
 
-        //Creo la parte nombre
-        let labelNombre= createNode("label", "Nombre: ", "", "");
-        let inputNombre= createNode("input", "", "", "");
+        // Creo la parte nombre
+        let labelNombre = createNode("label", "Nombre: ", "", "ficha-label");
+        let inputNombre = createNode("input", "", "", "ficha-input");
         inputNombre.value = socioEncontrado.nombre;
        
-        //Creo la parte ID
-        let labelID= createNode("label", "ID: ", "", "");
-        let inputID= createNode("input", "", "", "");
+        // Creo la parte ID
+        let labelID = createNode("label", "ID: ", "", "ficha-label");
+        let inputID = createNode("input", "", "", "ficha-input");
         inputID.value = socioEncontrado.id;
 
-        //Creo la parte mail
-        let labelEmail= createNode("label", "Email: ", "", "");
-        let inputEmail= createNode("input", "", "", "");
+        // Creo la parte mail
+        let labelEmail = createNode("label", "Email: ", "", "ficha-label");
+        let inputEmail = createNode("input", "", "", "ficha-input");
         inputEmail.value = socioEncontrado.email;
 
-        //el domiinio lo saco a partir de hacer un split con el @
-        //como se crea un array de dos celdas 0 y 1, se que en la parte del 1
-        // está el dominio
+        // Dominio a partir de split con @
         let partesEmail = socioEncontrado.email.split("@");
-        let labelDominio = createNode("label","Dominio: " + partesEmail[1],"","");
+        let labelDominio = createNode("label", "Dominio: ", "", "ficha-label");
+        let inputDominio = createNode("input","","","ficha-input");
+        inputDominio.value = partesEmail[1];
+
         
-        //Para mostrar el telefono uso el match, el cual mediante una expreision regular le digo que agrupe de 1 a 3 caracteres y con el .join los uno con un esapcio
-        //Con {1,3} le digo que cree 1 grupo de 3 caracteres y con la g que siga adelante y cree otro gurpo con los otros caracteres que se vaya encontrando.
-        //match me devuelve un array con los numeros separados en 3 y el .join une ese array en una sola variable con los espacios
+        // Teléfono formateado
         let telefonoFormateado = (socioEncontrado.telefono).match(/.{1,3}/g).join(' ');
-        let labelNumero = createNode("label","Numero: ","","");
-        let inputNumero = createNode("input", "", "", "");
+        let labelNumero = createNode("label", "Numero: ", "", "ficha-label");
+        let inputNumero = createNode("input", "", "", "ficha-input");
         inputNumero.value = telefonoFormateado;
         
-        //Fecha de nacimiento
-        let labelFechaNac = createNode("label", "Fecha de Nacimiento: ", "", "");
-        let inputFechaNac = createNode("input", "","","" );
-        inputFechaNac.value = creaFechaNac(new Date(socioEncontrado.fechaNacimiento)) + " " +calcularEdad(socioEncontrado.fechaNacimiento);
+        // Fecha de nacimiento
+        let labelFechaNac = createNode("label", "Fecha de Nacimiento: ", "", "ficha-label");
+        let inputFechaNac = createNode("input", "", "", "ficha-input");
+        inputFechaNac.value = creaFechaNac(new Date(socioEncontrado.fechaNacimiento)) + " - " + calcularEdad(socioEncontrado.fechaNacimiento) + " años";
         
-        //Tiempo y fecha que lleva de alta
-        let labelFechaAlta = createNode("label", "Fecha de Alta: ", "" ,"");
-        let inputFechaAlta = createNode("input","","","")
-        inputFechaAlta.value = socioEncontrado.fechaAlta + " - " + optenerDias(socioEncontrado.fechaAlta) + " días";
+        // Tiempo y fecha que lleva de alta
+        let labelFechaAlta = createNode("label", "Fecha de Alta: ", "", "ficha-label");
+        let inputFechaAlta = createNode("input", "", "", "ficha-input");
+        inputFechaAlta.value = socioEncontrado.fechaAlta + " - Lleva " + optenerDias(socioEncontrado.fechaAlta) + " días";
          
-        //Dias que faltan para su cumpleaños
-        let labelCumple = createNode("label", "Próximo cumpleaños: ", "" ,"");
-        let inputCumple = createNode("input","","","")
+        // Días que faltan para su cumpleaños
+        let labelCumple = createNode("label", "Próximo cumpleaños: ", "", "ficha-label");
+        let inputCumple = createNode("input", "", "", "ficha-input");
         inputCumple.value = "Quedan " + diasHastaCumpleaños(socioEncontrado.fechaNacimiento) + " días para su próximo cumpleaños";
 
-        //Actividades que está apuntado
-        let labelActividades = createNode("label", "Actividades: ", "", "");
-        //Actividades (recibe el elemento DOM devuelto por generaActividades)
-        //creo mi celda para actividades
-        let actividadesSocio2 = createNode("div", "", "", "");
-        //centro de las actividades le meto las actividades que se hacen en generaActividades())
+        // Actividades
+        let labelActividades = createNode("label", "Actividades: ", "", "ficha-label");
+        let actividadesSocio2 = createNode("div", "", "", "ficha-actividades-container");
         actividadesSocio2.appendChild(generaActividades(socioEncontrado));
 
-        let labelCuota = createNode("label", "Cuota: ", "", "");
-        let cuotaMensualSocio = createNode("input","", "","");
-        cuotaMensualSocio.value =  socioEncontrado.cuota.toFixed(2)+"€";
+        // Cuota
+        let labelCuota = createNode("label", "Cuota: ", "", "ficha-label");
+        let cuotaMensualSocio = createNode("input", "", "", "ficha-input");
+        cuotaMensualSocio.value = socioEncontrado.cuota.toFixed(2) + "€";
        
-      console.log(cuotaMensualSocio);
-      
-      divFormularioFicha.appendChild(labelNombre);
-      divFormularioFicha.appendChild(inputNombre);
-      divFormularioFicha.appendChild(labelID);      
-      divFormularioFicha.appendChild(inputID);
-      divFormularioFicha.appendChild(br)
-      divFormularioFicha.appendChild(labelEmail);      
-      divFormularioFicha.appendChild(inputEmail);
-      divFormularioFicha.appendChild(labelDominio);
-      divFormularioFicha.appendChild(br)
-      divFormularioFicha.appendChild(labelNumero);
-      divFormularioFicha.appendChild(inputNumero);
-      divFormularioFicha.appendChild(br);
-      divFormularioFicha.appendChild(labelFechaNac);
-      divFormularioFicha.appendChild(inputFechaNac);
-       divFormularioFicha.appendChild(br);
-      divFormularioFicha.appendChild(labelFechaAlta);
-      divFormularioFicha.appendChild(inputFechaAlta);
-      divFormularioFicha.appendChild(br);
-      divFormularioFicha.appendChild(labelCumple);
-      divFormularioFicha.appendChild(inputCumple);
-       divFormularioFicha.appendChild(br);
-      divFormularioFicha.appendChild(labelActividades);
-      divFormularioFicha.appendChild(actividadesSocio2);
-       divFormularioFicha.appendChild(br);
-      divFormularioFicha.appendChild(labelCuota)
-      divFormularioFicha.appendChild(cuotaMensualSocio);
-
+        // Añadimos todo al contenedor del formulario
+        divFormularioFicha.appendChild(labelNombre);
+        divFormularioFicha.appendChild(inputNombre);
+        divFormularioFicha.appendChild(labelID);      
+        divFormularioFicha.appendChild(inputID);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelEmail);      
+        divFormularioFicha.appendChild(inputEmail);
+        divFormularioFicha.appendChild(labelDominio);inputDominio
+        divFormularioFicha.appendChild(inputDominio);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelNumero);
+        divFormularioFicha.appendChild(inputNumero);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelFechaNac);
+        divFormularioFicha.appendChild(inputFechaNac);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelFechaAlta);
+        divFormularioFicha.appendChild(inputFechaAlta);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelCumple);
+        divFormularioFicha.appendChild(inputCumple);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelActividades);
+        divFormularioFicha.appendChild(actividadesSocio2);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelCuota);
+        divFormularioFicha.appendChild(cuotaMensualSocio);
 
     } else if (socioEncontrado == null) {
       divFormularioFicha.replaceChildren();
-      let pIntroDNI = createNode("p","Introduce un DNI válido arriba para consultar la ficha completa del socio.","","placeholder-text");
-     
-
+      let pIntroDNI = createNode("p", "Introduce un DNI válido arriba para consultar la ficha completa del socio.", "", "ficha-placeholder");
       divFormularioFicha.appendChild(pIntroDNI);
-
-
     }
-    
   }
-
 }
 /**
  * Funcion que se le pasa una fecha de alta y devuelve los dias que lleva el tio apuntado
