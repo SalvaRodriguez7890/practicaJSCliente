@@ -19,7 +19,7 @@ const desplegableOrdenacion = document.getElementById("sort-order");
 const buscaFicha = document.getElementById("search-dni-input");
 const divFormularioFicha = document.getElementById("member-card-details");
 const btnFicha = document.getElementById('btnBuscaFicha');
-
+const btnAltaSocio = document.getElementById("darAltaSocio");
 
 
 /**
@@ -261,14 +261,19 @@ desplegableOrdenacion.addEventListener("change", () => {
   filtrarYMostrarSocios();
 });
 
-// Escucha cambios en el buscador de fichas por id
+// Escucha cuando clicamos en el boton del buscador ficha
 btnFicha.addEventListener("click", () => {
   //para esconder el elemento que dice que metamos el dni
 
   fichaSocio();
 });
 
-
+// Escucha cuando clicamos en insertar socio
+btnAltaSocio.addEventListener("click", () => {
+  //para esconder el elemento que dice que metamos el dni
+  
+  darAltaSocio();
+});
 
 
 /**
@@ -438,28 +443,6 @@ function appCompleta() {
    seccion.requestFullscreen();
   }
 }
-
-
-/**
- * 
- * 3.3 Ficha de socio
-1. Se insertará un pequeño formulario que nos permita obtener la ficha de un socio por su DNI, se
-mostrará:
-o Nombre completo e id.
-o DNI.
-o Email completo y su dominio: (dominio: correo.es).
-o Teléfono agrupado de 3 en 3: 612 345 678.
-o Fecha de nacimiento en texto y edad: martes, 14 de marzo de 1995 · 31 años.
-o Fecha de alta en formato dd/mm/aaaa y días que lleva en el club.
-o Días que faltan para su próximo cumpleaños.
-o
-Actividades y cuota mensual.
-2.
-La búsqueda por DNI no distingue mayúsculas (12345678z también vale).
-3.
-Si el DNI no corresponde a ningún socio, aparece un mensaje de error en la ficha.
- */
-
 
 /**
  * Funcion que crea e inserta la ficha de los socios segun el DNI que se le pasa
@@ -649,12 +632,77 @@ function creaFechaNac(fecha){
   return `${nombreDia}, ${numeroDia} ${nombreMes} del ${anio}`;
 }
 
+/**
+ * Función para dar de alta a un nuevo socio recogiendo los datos del formulario HTML
+ */
+function darAltaSocio() {
+  // 1. Recogemos los valores básicos de los inputs de texto, email, tel, date y number
+  const nombreApellidos = document.getElementById("add-nombre").value.trim();
+  const dni = document.getElementById("add-dni").value.trim();
+  const email = document.getElementById("add-email").value.trim();
+  const telefono = document.getElementById("add-telefono").value.trim();
+  const fechaNacimiento = document.getElementById("add-fecha-nacimiento").value;
+  const cuota = parseFloat(document.getElementById("add-cuota").value) || 0;
 
+  // 2. Recogemos las actividades marcadas de los checkboxes
+  // Buscamos dentro del formulario todos los input de tipo checkbox que tengan name="actividades" y estén marcados (.checked)
+  const checkboxesActividades = document.querySelectorAll('#form-add-member input[name="actividades"]:checked');
+  let actividadesSeleccionadas = [];
+  
+  for (let chk of checkboxesActividades) {
+    actividadesSeleccionadas.push(chk.value);
+  }
+  // Las unimos con comas para que coincida con el formato de tu propiedad "actividades" (ej: "yoga,natación")
+  let stringActividades = actividadesSeleccionadas.join(",");
 
+  // 3. Validaciones básicas obligatorias (puedes personalizarlas a tu gusto)
+  if (nombre === "" || dni === "" || email === "" || fechaNacimiento === "") {
+    alert("Por favor, completa al menos los campos obligatorios.");
+    return;
+  }
 
+  // Separamos Nombre y Apellidos si el usuario los puso juntos en el mismo input
+  // (O si prefieres guardarlo tal cual, ajusta las propiedades de tu objeto socio)
+  let partesNombre = nombreApellidos.split(" ");
+  let nombre = partesNombre[0] || "";
+  let apellidos = partesNombre.slice(1).join(" ") || "";
 
+  // 4. Generamos un ID automático nuevo (el siguiente al último de la lista)
+  let nuevoId = listaSocios.length > 0 ? listaSocios[listaSocios.length - 1].id + 1 : 1;
 
+  // 5. Obtenemos la fecha actual en formato YYYY-MM-DD para la fecha de alta
+  let hoy = new Date();
+  let anio = hoy.getFullYear();
+  let mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  let dia = String(hoy.getDate()).padStart(2, '0');
+  let fechaAltaActual = `${anio}-${mes}-${dia}`;
 
+  // 6. Creamos el objeto con la estructura exacta que espera tu aplicación
+  let nuevoSocio = {
+    id: nuevoId,
+    nombre: nombre,
+    apellidos: apellidos,
+    dni: dni,
+    email: email,
+    telefono: telefono,
+    fechaNacimiento: fechaNacimiento,
+    fechaAlta: fechaAltaActual,
+    cuota: cuota,
+    actividades: stringActividades
+  };
+
+  // 7. Añadimos el socio a la lista original
+  listaSocios.push(nuevoSocio);
+
+  // 8. Actualizamos la tabla de la interfaz para que se vea el nuevo socio al momento
+  filtrarYMostrarSocios();
+
+  // 9. Limpiamos el formulario (opcional)
+  document.getElementById("form-add-member").reset();
+  
+  alert(`¡Socio ${nombre} dado de alta correctamente!`);
+
+}
 
 
 
