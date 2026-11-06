@@ -264,7 +264,7 @@ desplegableOrdenacion.addEventListener("change", () => {
 // Escucha cambios en el buscador de fichas por id
 btnFicha.addEventListener("click", () => {
   //para esconder el elemento que dice que metamos el dni
-  document.getElementById("textoIntroduceDNI").hidden=true;
+
   fichaSocio();
 });
 
@@ -467,6 +467,12 @@ function fichaSocio(){
   let dni = buscaFicha.value;
   //inicializo el socioEncontrado a null.
   let socioEncontrado = null;
+  //pregunto si el nodo tieen algo dentro, si tiene lo borro
+  if (divFormularioFicha.hasChildNodes()) {
+    divFormularioFicha.replaceChildren();
+
+  }
+  
 
   if(buscaFicha.value != ""){
 
@@ -480,7 +486,7 @@ function fichaSocio(){
     }
 
     //si el socioEncontrado es diferente de null pues creo el formulario con los datos
-    if(socioEncontrado != "null"){
+    if(socioEncontrado != null){
      
         //Creo un salto de linea que despues voy metiendo
         let br = createNode("br","","","");
@@ -515,13 +521,34 @@ function fichaSocio(){
         inputNumero.value = telefonoFormateado;
         
         //Fecha de nacimiento
-        let labelFechaNac = createNode("labe", "Fecha de Nacimiento: ");
+        let labelFechaNac = createNode("label", "Fecha de Nacimiento: ", "", "");
         let inputFechaNac = createNode("input", "","","" );
         inputFechaNac.value = creaFechaNac(new Date(socioEncontrado.fechaNacimiento)) + " " +calcularEdad(socioEncontrado.fechaNacimiento);
         
-        
+        //Tiempo y fecha que lleva de alta
+        let labelFechaAlta = createNode("label", "Fecha de Alta: ", "" ,"");
+        let inputFechaAlta = createNode("input","","","")
+        inputFechaAlta.value = socioEncontrado.fechaAlta + " - " + optenerDias(socioEncontrado.fechaAlta) + " días";
+         
+        //Dias que faltan para su cumpleaños
+        let labelCumple = createNode("label", "Próximo cumpleaños: ", "" ,"");
+        let inputCumple = createNode("input","","","")
+        inputCumple.value = "Quedan " + diasHastaCumpleaños(socioEncontrado.fechaNacimiento) + " días para su próximo cumpleaños";
 
+        //Actividades que está apuntado
+        let labelActividades = createNode("label", "Actividades: ", "", "");
+        //Actividades (recibe el elemento DOM devuelto por generaActividades)
+        //creo mi celda para actividades
+        let actividadesSocio2 = createNode("div", "", "", "");
+        //centro de las actividades le meto las actividades que se hacen en generaActividades())
+        actividadesSocio2.appendChild(generaActividades(socioEncontrado));
 
+        let labelCuota = createNode("label", "Cuota: ", "", "");
+        let cuotaMensualSocio = createNode("input","", "","");
+        cuotaMensualSocio.value =  socioEncontrado.cuota.toFixed(2)+"€";
+       
+      console.log(cuotaMensualSocio);
+      
       divFormularioFicha.appendChild(labelNombre);
       divFormularioFicha.appendChild(inputNombre);
       divFormularioFicha.appendChild(labelID);      
@@ -536,13 +563,88 @@ function fichaSocio(){
       divFormularioFicha.appendChild(br);
       divFormularioFicha.appendChild(labelFechaNac);
       divFormularioFicha.appendChild(inputFechaNac);
+       divFormularioFicha.appendChild(br);
+      divFormularioFicha.appendChild(labelFechaAlta);
+      divFormularioFicha.appendChild(inputFechaAlta);
+      divFormularioFicha.appendChild(br);
+      divFormularioFicha.appendChild(labelCumple);
+      divFormularioFicha.appendChild(inputCumple);
+       divFormularioFicha.appendChild(br);
+      divFormularioFicha.appendChild(labelActividades);
+      divFormularioFicha.appendChild(actividadesSocio2);
+       divFormularioFicha.appendChild(br);
+      divFormularioFicha.appendChild(labelCuota)
+      divFormularioFicha.appendChild(cuotaMensualSocio);
+
+
+    } else if (socioEncontrado == null) {
+      divFormularioFicha.replaceChildren();
+      let pIntroDNI = createNode("p","Introduce un DNI válido arriba para consultar la ficha completa del socio.","","placeholder-text");
+     
+
+      divFormularioFicha.appendChild(pIntroDNI);
+
+
     }
     
   }
 
 }
+/**
+ * Funcion que se le pasa una fecha de alta y devuelve los dias que lleva el tio apuntado
+ * @param {*} fecha 
+ * @returns 
+ */
+function optenerDias(fecha){
+
+  let fechaHoy = new Date();
+  let fechaAlta = new Date(fecha);
 
 
+  // Diferencia en milisegundos
+  let diferenciaMs = fechaHoy - fechaAlta;
+
+  // Milisegundos en un día (1000ms * 60s * 60min * 24horas)
+  let msPorDia = 1000 * 60 * 60 * 24;
+
+  // Divido y redondeo hacia abajo para obtener días enteros
+  return Math.floor(diferenciaMs / msPorDia);
+}
+
+/**
+ * Funcion que se le pasa la fecha de cumpleaños y calcula los dias que faltan
+ * @param {*} fecha 
+ * @returns 
+ */
+function diasHastaCumpleaños(fechaNacimiento) {
+  //saco la fecha de hoy
+  let hoy = new Date();
+  hoy.setHours(0, 0, 0, 0); //Pongo la fecha de hoy a las 00:00 para que no de problemas al calcular
+
+  //saco la fecha de nacimento en tipo date
+  let nacimiento = new Date(fechaNacimiento);
+  
+  //Ahora voy a pasar la fecha de nacimiento pero a este año, osea cojo dia y mes de la fecha de nacimiento
+  //y la pongo con el año en el que estamos
+  let cumpleEsteAno = new Date(hoy.getFullYear(), nacimiento.getMonth(), nacimiento.getDate());
+
+  // Si el cumpleaños de este año ya pasó, calculamos para el año que viene
+  if (cumpleEsteAno < hoy) {
+    cumpleEsteAno.setFullYear(hoy.getFullYear() + 1);
+  }
+
+  // Diferencia en milisegundos y conversión a días
+  let diferenciaMs = cumpleEsteAno - hoy;
+  let msPorDia = 1000 * 60 * 60 * 24;
+
+  return Math.round(diferenciaMs / msPorDia);
+}
+
+/**
+ * Fuyncion que a partir de una fecha en formato año-mes-dia te da un string de la fecha
+ * @param {*} fecha 
+ * @returns 
+ */
 function creaFechaNac(fecha){
 
 
