@@ -828,7 +828,7 @@ function darAltaSocio() {
   document.getElementById("form-add-member").reset();
   
   // SI TODO SALE BIEN: Mensaje de éxito con createNode y appendChild con estilo verde
-  let mensajeExito = `¡Socio ${nombre} dado de alta correctamente!`;
+  let mensajeExito = `¡Socio ${nombre} con ID ${nuevoId} dado de alta correctamente!`;
   let contenedorExito = createNode("div", mensajeExito, "", "exito-alta-socio");
   divAltaSocio.appendChild(contenedorExito);
 }
