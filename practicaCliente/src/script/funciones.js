@@ -273,12 +273,7 @@ btnFicha.addEventListener("click", () => {
 btnAltaSocio.addEventListener("click", () => {
   //para esconder el elemento que dice que metamos el dni
 
-  
     darAltaSocio();
-  
-   
-
-  
   
 });
 
@@ -646,6 +641,34 @@ function creaFechaNac(fecha){
 }
 
 /**
+ * Valido el formato de los DNI nuevos (solo que sean 8 numerosy  una letra)
+ * @param {*} dni 
+ * @returns 
+ */
+function validarFormatoDNI(dni) {
+  return /^\d{8}[A-Za-z]$/.test(dni);
+}
+/**
+ * Validacion del telefono
+ * @param {*} telefono 
+ * @returns 
+ */
+function validarTelefono(telefono) {
+  return /^[6789](\s*\d){8}$/.test(telefono);
+}
+
+/**
+ * Validacion emial.
+ * @param {*} email 
+ * @returns 
+ */
+function validarEmail(email) {
+  // Comprueba usuario @ dominio . extensión de 2 o más letras
+  const regex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email);
+}
+
+/**
  * Función para dar de alta a un nuevo socio recogiendo los datos del formulario HTML
  */
 function darAltaSocio() {
@@ -689,15 +712,30 @@ function darAltaSocio() {
     arrayErrores.push("Ese DNI YA EXISTE")
   }
 
+
+  if(validarFormatoDNI(dni)){
+    arrayErrores.push("FORMATO DNI INVÁLIDO");
+  }
   if(dni == "" || dni.length == 0  ){
    arrayErrores.push("DNI NO INDICADO")
 
   }
   
+  
+   if(validarEmail(email)){
+    arrayErrores.push("FORMATO EMAIL INVÁLIDO");
+  }
   if(email == "" || email.length == 0  ){
   arrayErrores.push("Email NO INDICADO")
   }
 
+  if(telefono == "" || telefono.length == 0){
+    arrayErrores.push("Numero de telefono no indicado")
+
+  }
+  if(validarTelefono(telefono)){
+    arrayErrores.push("FORMATO de Numero IVANLIDO")
+  }
  
   if(fechaNacimiento == "" || fechaNacimiento.length == 0 ){
   arrayErrores.push("Fecha de nacimiento NO INDICADO");
