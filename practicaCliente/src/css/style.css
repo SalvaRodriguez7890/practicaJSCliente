@@ -506,3 +506,27 @@ text-align: right;
   padding: 1.5rem;
   font-style: italic;
 }
+/* ==========================================================================
+   ESTILOS DINÁMICOS PARA MENSAJES DE ALTA DE SOCIO (createElement / appendChild)
+   ========================================================================== */
+.error-alta-socio {
+  color: var(--danger-color);
+  background-color: #fef2f2;
+  border: 1px solid var(--danger-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+.exito-alta-socio {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border: 1px solid #badbcc;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}

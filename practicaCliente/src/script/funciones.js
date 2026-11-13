@@ -645,11 +645,29 @@ function creaFechaNac(fecha){
  * @param {*} dni 
  * @returns 
  */
-function validarFormatoDNI(dni) {
-  return /^\d{8}[A-Za-z]$/.test(dni);
+function validarDNI(dni) {
+  //Comprobar el formato básico: 8 dígitos y una letra al final
+  const regex = /^\d{8}[a-zA-Z]$/;
+  if (!regex.test(dni)) {
+    return false; // El formato no coincide
+  }
+
+  //Extraer el número y la letra introducida (convertida a mayúscula)
+  const numero = parseInt(dni.slice(0, 8), 10);
+  const letraIngresada = dni.slice(-1).toUpperCase();
+
+  //Cadena oficial de letras para el cálculo del DNI
+  const letrasValidas = "TRWAGMYFPDXBNJZSQVHLCKE";
+
+  //Calcular la letra correcta usando el resto de dividir entre 23
+  const letraCalculada = letrasValidas.charAt(numero % 23);
+
+  //Comprobar si coincide
+  return letraCalculada === letraIngresada;
 }
-/**
- * Validacion del telefono
+
+
+ /* Validacion del telefono
  * @param {*} telefono 
  * @returns 
  */
@@ -672,7 +690,10 @@ function validarEmail(email) {
  * Función para dar de alta a un nuevo socio recogiendo los datos del formulario HTML
  */
 function darAltaSocio() {
-  //Recogemos los valores básicos de los inputs de texto, email, tel, date y number
+  // Limpiamos el contenedor de mensajes previo utilizando nodos si es necesario o reseteando su contenido
+  divAltaSocio.innerHTML = ""; // Limpieza inicial del contenedor destino
+
+  // Recogemos los valores básicos de los inputs de texto, email, tel, date y number
   const nombreApellidos = document.getElementById("add-nombre").value.trim();
   const dni = document.getElementById("add-dni").value.trim();
   const email = document.getElementById("add-email").value.trim();
@@ -681,112 +702,109 @@ function darAltaSocio() {
   const cuota = parseFloat(document.getElementById("add-cuota").value) || 0;
 
   const arrayErrores = [];
-  //Recogemos las actividades marcadas de los checkboxes
-  //Buscamos dentro del formulario todos los input de tipo checkbox que tengan name="actividades" y estén marcados (.checked)
+  // Recogemos las actividades marcadas de los checkboxes
   const checkboxesActividades = document.querySelectorAll('#form-add-member input[name="actividades"]:checked');
   let actividadesSeleccionadas = [];
   
   for (let chk of checkboxesActividades) {
     actividadesSeleccionadas.push(chk.value);
   }
-  //Las unimos con comas para que coincida con el formato de tu propiedad "actividades" (ej: "yoga,natación")
   let stringActividades = actividadesSeleccionadas.join(",");
 
-  //Validaciones básicas obligatorias (puedes personalizarlas a tu gusto)
+  // Validaciones básicas obligatorias
   if (nombreApellidos.length == 0 || nombreApellidos == "") {    
-   arrayErrores.push("Nombre No INDICADO")
+     arrayErrores.push("Nombre No INDICADO");
   }
 
-  //busco el socio por el DNI para ver si existe
-
-  // entro en un bucle de la lista de socios original y voy buscando por DNI
+  // Busco el socio por el DNI para ver si existe
   let socioEncontrado = null;
-    for(let soc of listaSocios){
-      if(soc.dni.localeCompare(dni) == 0){
-        socioEncontrado = soc;
-        break; // salgo del bucle porque ya encontró al socio
-      }
+  for (let soc of listaSocios) {
+    if (soc.dni.localeCompare(dni) == 0) {
+      socioEncontrado = soc;
+      break;
     }
-  //si es diferente de null es porque existe y lo ha encontrado
-  if(socioEncontrado != null){
-    arrayErrores.push("Ese DNI YA EXISTE")
+  }
+  
+  if (socioEncontrado != null) {
+    arrayErrores.push("Ese DNI YA EXISTE");
   }
 
-
-  if(validarFormatoDNI(dni)){
+  if (!validarDNI(dni)) {
     arrayErrores.push("FORMATO DNI INVÁLIDO");
   }
-  if(dni == "" || dni.length == 0  ){
-   arrayErrores.push("DNI NO INDICADO")
-
+  if (dni == "" || dni.length == 0) {
+     arrayErrores.push("DNI NO INDICADO");
   }
   
-  
-   if(validarEmail(email)){
+  if (!validarEmail(email)) {
     arrayErrores.push("FORMATO EMAIL INVÁLIDO");
   }
-  if(email == "" || email.length == 0  ){
-  arrayErrores.push("Email NO INDICADO")
+  if (email == "" || email.length == 0) {
+    arrayErrores.push("Email NO INDICADO");
   }
 
-  if(telefono == "" || telefono.length == 0){
-    arrayErrores.push("Numero de telefono no indicado")
-
+  if (telefono == "" || telefono.length == 0) {
+    arrayErrores.push("Numero de telefono no indicado");
   }
-  if(validarTelefono(telefono)){
-    arrayErrores.push("FORMATO de Numero IVANLIDO")
+  if (!validarTelefono(telefono)) {
+    arrayErrores.push("FORMATO de Numero IVANLIDO");
   }
  
-  if(fechaNacimiento == "" || fechaNacimiento.length == 0 ){
-  arrayErrores.push("Fecha de nacimiento NO INDICADO");
+  if (fechaNacimiento == "" || fechaNacimiento.length == 0) {
+    arrayErrores.push("Fecha de nacimiento NO INDICADO");
   }
-   //calculo la edad
+  
   let edad = calcularEdad(fechaNacimiento);
-  if(edad < 14){
-  arrayErrores.push("No se permiten menores de 14");
+  if (edad < 14) {
+    arrayErrores.push("No se permiten menores de 14");
   }
 
-  if(cuota == 0){
-  arrayErrores.push("Cuota NO INDICADO");
+  if (cuota == 0) {
+    arrayErrores.push("Cuota NO INDICADO");
   }
 
-  if(actividadesSeleccionadas.length == 0){
-  arrayErrores.push("Sin actividades seleccionadas");
+  if (actividadesSeleccionadas.length == 0) {
+    arrayErrores.push("Sin actividades seleccionadas");
   }
 
-  if(arrayErrores.length > 0){
-    let cadenaErroes = "";
-    for(let error of arrayErrores){
-      cadenaErroes += error + "<br>";
-
+  // SI HAY ERRORES: Creamos el contenedor con createNode y añadimos cada error con <br> o divs mediante nodos
+  if (arrayErrores.length > 0) {
+    let contenedorErrores = createNode("div", "", "", "error-alta-socio");
+    
+    for (let i = 0; i < arrayErrores.length; i++) {
+      let textoError = createNode("span","-"+arrayErrores[i].toUpperCase(), "", "");
+      contenedorErrores.appendChild(textoError);
+      
+      // Si no es el último error, añadimos un salto de línea para separar
+      if (i < arrayErrores.length - 1) {
+        contenedorErrores.appendChild(createNode("br", "", "", ""));
+      }
     }
-    divAltaSocio.innerHTML = cadenaErroes;
-    return; //para salir de la funcion
+    
+    divAltaSocio.appendChild(contenedorErrores);
+    return; // Para salir de la funcion
   }
-  //Separamos Nombre y Apellidos si el usuario los puso juntos en el mismo input
+
+  // Separamos Nombre y Apellidos
   let partesNombre = nombreApellidos.split(" ");
   let nombre = partesNombre[0];
   let apellidos = partesNombre.slice(1).join(" ");
 
-  // eneramos un ID automático nuevo (el siguiente al último de la lista)
-  
+  // Generamos un ID automático nuevo
   let ultimoSocio = listaSocios[listaSocios.length - 1];
-    let partesId = ultimoSocio.id.split("-"); // Divide el ultimo socio por ejemplo "SOC-0005" en ["SOC", "0005"]
-    let numeroSiguiente = parseInt(partesId[1], 10) + 1; // Pasa "0005" a entero (5) y le suma 1 (6)
-    
-    // Rellenamos con ceros a la izquierda para que mantenga siempre 4 dígitos (ej: "0006")
-    let numeroFormateado = String(numeroSiguiente).padStart(4, '0');
-    
+  let partesId = ultimoSocio.id.split("-");
+  let numeroSiguiente = parseInt(partesId[1], 10) + 1;
+  let numeroFormateado = String(numeroSiguiente).padStart(4, '0');
   let nuevoId = "SOC-" + numeroFormateado;
 
-  //Obtenemos la fecha actual en formato YYYY-MM-DD para la fecha de alta
-  let hoy = new Date(); //creo la fecha de hoy
-  let anio = hoy.getFullYear(); //le saco el año
-  let mes = String(hoy.getMonth() + 1).padStart(2, '0'); //le saco el mes y le sumo 1 porque enero empieza en 0, luego con padStart le digo que sean 2 numeros y rellene con 0
-  let dia = String(hoy.getDate()).padStart(2, '0'); //ago lo mismo con el dia, pero al dia no le sumo 1
-  let fechaAltaActual = `${anio}-${mes}-${dia}`; //creo la fecha tal cual el formato
+  // Obtenemos la fecha actual
+  let hoy = new Date();
+  let anio = hoy.getFullYear();
+  let mes = String(hoy.getMonth() + 1).padStart(2, '0');
+  let dia = String(hoy.getDate()).padStart(2, '0');
+  let fechaAltaActual = `${anio}-${mes}-${dia}`;
 
-  //Creamos el objeto con la estructura exacta que espera tu aplicación
+  // Creamos el objeto del nuevo socio
   let nuevoSocio = {
     id: nuevoId,
     nombre: nombre,
@@ -800,19 +818,20 @@ function darAltaSocio() {
     actividades: stringActividades
   };
 
-  //Añadimos el socio a la lista original
+  // Añadimos el socio a la lista original
   listaSocios.push(nuevoSocio);
 
-  //Actualizamos la tabla de la interfaz para que se vea el nuevo socio al momento
+  // Actualizamos la tabla de la interfaz
   filtrarYMostrarSocios();
 
-  //Limpio el formulario si todo sale bien
+  // Limpio el formulario si todo sale bien
   document.getElementById("form-add-member").reset();
   
-   divAltaSocio.innerHTML = `¡Socio ${nombre} dado de alta correctamente!`;
-
+  // SI TODO SALE BIEN: Mensaje de éxito con createNode y appendChild con estilo verde
+  let mensajeExito = `¡Socio ${nombre} dado de alta correctamente!`;
+  let contenedorExito = createNode("div", mensajeExito, "", "exito-alta-socio");
+  divAltaSocio.appendChild(contenedorExito);
 }
-
 
 
 /**
