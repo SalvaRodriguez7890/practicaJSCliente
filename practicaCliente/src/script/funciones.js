@@ -19,6 +19,7 @@ const desplegableOrdenacion = document.getElementById("sort-order");
 const buscaFicha = document.getElementById("search-dni-input");
 const divFormularioFicha = document.getElementById("member-card-details");
 const btnFicha = document.getElementById('btnBuscaFicha');
+const divAltaSocio = document.getElementById("alta-notification")
 const btnAltaSocio = document.getElementById("darAltaSocio");
 
 
@@ -271,8 +272,14 @@ btnFicha.addEventListener("click", () => {
 // Escucha cuando clicamos en insertar socio
 btnAltaSocio.addEventListener("click", () => {
   //para esconder el elemento que dice que metamos el dni
+
   
-  darAltaSocio();
+    darAltaSocio();
+  
+   
+
+  
+  
 });
 
 
@@ -332,7 +339,13 @@ function calcularEdad(fechaNacimiento) {
  * @returns 
  */
 function generaAvatar(socio){
-  return (socio.nombre[0] + socio.apellidos[0]).toUpperCase();
+  let avatar = (socio.nombre[0] + socio.apellidos[0]).toUpperCase();
+  if(typeof avatar == "undefined" || avatar == null){
+    return "AA"
+  }else{
+    return avatar;
+  }
+   
 }
 
 /**
@@ -636,7 +649,7 @@ function creaFechaNac(fecha){
  * Función para dar de alta a un nuevo socio recogiendo los datos del formulario HTML
  */
 function darAltaSocio() {
-  // 1. Recogemos los valores básicos de los inputs de texto, email, tel, date y number
+  //Recogemos los valores básicos de los inputs de texto, email, tel, date y number
   const nombreApellidos = document.getElementById("add-nombre").value.trim();
   const dni = document.getElementById("add-dni").value.trim();
   const email = document.getElementById("add-email").value.trim();
@@ -644,40 +657,98 @@ function darAltaSocio() {
   const fechaNacimiento = document.getElementById("add-fecha-nacimiento").value;
   const cuota = parseFloat(document.getElementById("add-cuota").value) || 0;
 
-  // 2. Recogemos las actividades marcadas de los checkboxes
-  // Buscamos dentro del formulario todos los input de tipo checkbox que tengan name="actividades" y estén marcados (.checked)
+  const arrayErrores = [];
+  //Recogemos las actividades marcadas de los checkboxes
+  //Buscamos dentro del formulario todos los input de tipo checkbox que tengan name="actividades" y estén marcados (.checked)
   const checkboxesActividades = document.querySelectorAll('#form-add-member input[name="actividades"]:checked');
   let actividadesSeleccionadas = [];
   
   for (let chk of checkboxesActividades) {
     actividadesSeleccionadas.push(chk.value);
   }
-  // Las unimos con comas para que coincida con el formato de tu propiedad "actividades" (ej: "yoga,natación")
+  //Las unimos con comas para que coincida con el formato de tu propiedad "actividades" (ej: "yoga,natación")
   let stringActividades = actividadesSeleccionadas.join(",");
 
-  // 3. Validaciones básicas obligatorias (puedes personalizarlas a tu gusto)
-  if (nombre === "" || dni === "" || email === "" || fechaNacimiento === "") {
-    alert("Por favor, completa al menos los campos obligatorios.");
-    return;
+  //Validaciones básicas obligatorias (puedes personalizarlas a tu gusto)
+  if (nombreApellidos.length == 0 || nombreApellidos == "") {    
+   arrayErrores.push("Nombre No INDICADO")
   }
 
-  // Separamos Nombre y Apellidos si el usuario los puso juntos en el mismo input
-  // (O si prefieres guardarlo tal cual, ajusta las propiedades de tu objeto socio)
+  //busco el socio por el DNI para ver si existe
+
+  // entro en un bucle de la lista de socios original y voy buscando por DNI
+  let socioEncontrado = null;
+    for(let soc of listaSocios){
+      if(soc.dni.localeCompare(dni) == 0){
+        socioEncontrado = soc;
+        break; // salgo del bucle porque ya encontró al socio
+      }
+    }
+  //si es diferente de null es porque existe y lo ha encontrado
+  if(socioEncontrado != null){
+    arrayErrores.push("Ese DNI YA EXISTE")
+  }
+
+  if(dni == "" || dni.length == 0  ){
+   arrayErrores.push("DNI NO INDICADO")
+
+  }
+  
+  if(email == "" || email.length == 0  ){
+  arrayErrores.push("Email NO INDICADO")
+  }
+
+ 
+  if(fechaNacimiento == "" || fechaNacimiento.length == 0 ){
+  arrayErrores.push("Fecha de nacimiento NO INDICADO");
+  }
+   //calculo la edad
+  let edad = calcularEdad(fechaNacimiento);
+  if(edad < 14){
+  arrayErrores.push("No se permiten menores de 14");
+  }
+
+  if(cuota == 0){
+  arrayErrores.push("Cuota NO INDICADO");
+  }
+
+  if(actividadesSeleccionadas.length == 0){
+  arrayErrores.push("Sin actividades seleccionadas");
+  }
+
+  if(arrayErrores.length > 0){
+    let cadenaErroes = "";
+    for(let error of arrayErrores){
+      cadenaErroes += error + "<br>";
+
+    }
+    divAltaSocio.innerHTML = cadenaErroes;
+    return; //para salir de la funcion
+  }
+  //Separamos Nombre y Apellidos si el usuario los puso juntos en el mismo input
   let partesNombre = nombreApellidos.split(" ");
-  let nombre = partesNombre[0] || "";
-  let apellidos = partesNombre.slice(1).join(" ") || "";
+  let nombre = partesNombre[0];
+  let apellidos = partesNombre.slice(1).join(" ");
 
-  // 4. Generamos un ID automático nuevo (el siguiente al último de la lista)
-  let nuevoId = listaSocios.length > 0 ? listaSocios[listaSocios.length - 1].id + 1 : 1;
+  // eneramos un ID automático nuevo (el siguiente al último de la lista)
+  
+  let ultimoSocio = listaSocios[listaSocios.length - 1];
+    let partesId = ultimoSocio.id.split("-"); // Divide el ultimo socio por ejemplo "SOC-0005" en ["SOC", "0005"]
+    let numeroSiguiente = parseInt(partesId[1], 10) + 1; // Pasa "0005" a entero (5) y le suma 1 (6)
+    
+    // Rellenamos con ceros a la izquierda para que mantenga siempre 4 dígitos (ej: "0006")
+    let numeroFormateado = String(numeroSiguiente).padStart(4, '0');
+    
+  let nuevoId = "SOC-" + numeroFormateado;
 
-  // 5. Obtenemos la fecha actual en formato YYYY-MM-DD para la fecha de alta
-  let hoy = new Date();
-  let anio = hoy.getFullYear();
-  let mes = String(hoy.getMonth() + 1).padStart(2, '0');
-  let dia = String(hoy.getDate()).padStart(2, '0');
-  let fechaAltaActual = `${anio}-${mes}-${dia}`;
+  //Obtenemos la fecha actual en formato YYYY-MM-DD para la fecha de alta
+  let hoy = new Date(); //creo la fecha de hoy
+  let anio = hoy.getFullYear(); //le saco el año
+  let mes = String(hoy.getMonth() + 1).padStart(2, '0'); //le saco el mes y le sumo 1 porque enero empieza en 0, luego con padStart le digo que sean 2 numeros y rellene con 0
+  let dia = String(hoy.getDate()).padStart(2, '0'); //ago lo mismo con el dia, pero al dia no le sumo 1
+  let fechaAltaActual = `${anio}-${mes}-${dia}`; //creo la fecha tal cual el formato
 
-  // 6. Creamos el objeto con la estructura exacta que espera tu aplicación
+  //Creamos el objeto con la estructura exacta que espera tu aplicación
   let nuevoSocio = {
     id: nuevoId,
     nombre: nombre,
@@ -691,16 +762,16 @@ function darAltaSocio() {
     actividades: stringActividades
   };
 
-  // 7. Añadimos el socio a la lista original
+  //Añadimos el socio a la lista original
   listaSocios.push(nuevoSocio);
 
-  // 8. Actualizamos la tabla de la interfaz para que se vea el nuevo socio al momento
+  //Actualizamos la tabla de la interfaz para que se vea el nuevo socio al momento
   filtrarYMostrarSocios();
 
-  // 9. Limpiamos el formulario (opcional)
+  //Limpio el formulario si todo sale bien
   document.getElementById("form-add-member").reset();
   
-  alert(`¡Socio ${nombre} dado de alta correctamente!`);
+   divAltaSocio.innerHTML = `¡Socio ${nombre} dado de alta correctamente!`;
 
 }
 
