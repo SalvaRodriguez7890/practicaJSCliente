@@ -1,0 +1,532 @@
+/* ==========================================================================
+   RESET Y VARIABLES GLOBALES
+   ========================================================================== */
+:root {
+  --primary-color: #011238c2;
+  --primary-hover: #063a5ca4;
+  --secondary-color: #011238c2;
+  --success-color: #198754;
+  --danger-color: #dc3545;
+  --bg-color: #d0e1fa46;
+  --card-bg: #ffffff;
+  --text-color: #212529;
+  --border-color: #dee2e6;
+  --radius: 8px;
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  padding-bottom: 2rem;
+}
+
+/* ==========================================================================
+   3.1 CABECERA
+   ========================================================================== */
+.tituloPrincipal {
+  background-color: #011238c2;
+  color: #ffffff;
+  padding: 1.5rem 2rem;
+  box-shadow: var(--shadow);
+}
+
+.contenidoTitulo{
+  max-width: 1700px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.contenidoTitulo h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.datetime-container {
+  text-align: right;
+}
+
+.date-text {
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+
+.time-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: monospace;
+  color: #f0f0f0;
+}
+
+/* ==========================================================================
+   LAYOUT Y TARJETAS
+   ========================================================================== */
+.mainPrincipal {
+  max-width: 1700px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
+}
+
+.card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.85rem;
+  color: #0f172a;
+  border-bottom: 2px solid var(--bg-color);
+  padding-bottom: 0.4rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* FUERZA QUE LAS 3 TARJETAS ESTÉN EN LA MISMA FILA HORIZONTAL */
+.grid-three-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+  width: 100%;
+}
+
+/* ==========================================================================
+   3.2 LISTADO Y TABLA
+   ========================================================================== */
+.controlesFiltroSocio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.divTablaSocios {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+/* Añade esto justo debajo para darle aire a la columna de Actividades */
+#members-table th:nth-child(4),
+#members-table td:nth-child(4) {
+  min-width: 190px;
+}
+
+th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #475569;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.member-id-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.no-results {
+  text-align: center;
+  padding: 2rem;
+  color: var(--secondary-color);
+  font-style: italic;
+}
+
+:fullscreen #listado-section,
+:-webkit-full-screen #listado-section {
+  background-color: var(--card-bg);
+  padding: 2rem;
+  overflow-y: auto;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ==========================================================================
+   FORMULARIO E INPUTS
+   ========================================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+input[type="search"],
+select {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+}
+
+input.input-error {
+  border-color: var(--danger-color) !important;
+  background-color: #fef2f2;
+}
+
+.error-message {
+  font-size: 0.7rem;
+  color: var(--danger-color);
+  min-height: 0.8rem;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem;
+  margin-top: 0.15rem;
+}
+
+.checkbox-grid label {
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.inline-input-button {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ==========================================================================
+   BOTONES
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  color: #ffffff;
+}
+.btn-secondary:hover {
+  background-color: #063a5ca4;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+  color: #ffffff;
+}
+.btn-success:hover {
+  background-color: #157347;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* ==========================================================================
+   3.3 FICHA DE SOCIO
+   ========================================================================== */
+.member-card-container {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background-color: #f8fafc;
+  border-radius: 6px;
+  border: 1px dashed #cbd5e1;
+}
+
+.placeholder-text {
+  color: var(--secondary-color);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.card-error-msg {
+  color: var(--danger-color);
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.member-detail-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.member-detail-list strong {
+  color: #334155;
+}
+
+/* ==========================================================================
+   3.5 ESTADÍSTICAS
+   ========================================================================== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+.stat-box {
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+}
+
+.stat-box h3 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-bottom: 0.1rem;
+}
+
+.stat-box p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   NOTIFICACIONES Y UTILIDADES
+   ========================================================================== */
+.notification {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+  font-size: 0.8rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   ADAPTATIVO (MEDIA QUERIES)
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .grid-three-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .contenidoTitulo {
+    flex-direction: column;
+    text-align: center;
+  }
+  .datetime-container {
+    text-align: center;
+  }
+}
+
+
+
+/* Contenedor de las actividades dentro de la celda */
+/* Celda de actividades de la tabla */
+.tdActividades {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Contenedor interno que fuerza la fila horizontal */
+.flex-actividades {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 4px;
+  align-items: center;
+}
+
+/* Estilo de cada cajita de actividad */
+.actividades {
+  display: inline-block;
+  color: darkblue;
+  background-color: lightblue;
+  border: 1px solid darkblue;
+  border-radius: 7px;
+  text-align: center;
+  font-size: 11px;
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.tdSocio{
+  color: #011238c2;
+}
+
+.tdCuota{
+color: darkblue;
+text-align: right;
+
+}
+
+.spanAvatar {
+  display: inline-flex;       /* Activa flexbox para centrar el contenido */
+  align-items: center;        /* Centra verticalmente */
+  justify-content: center;    /* Centra horizontalmente */
+  width: 40px;                /* Ancho fijo (puedes ajustarlo a tu gusto, ej: 35px, 40px) */
+  height: 40px;               /* Alto fijo (DEBE SER IGUAL AL ANCHO) */
+  border: solid 1px darkblue;
+  border-radius: 50%;         /* Vuelve el cuadrado en un círculo perfecto */
+  color: darkblue;
+  background-color: lightblue;
+  font-size: 16px;            /* Tamaño de la letra ajustado al círculo */
+  box-sizing: border-box;     /* Asegura que el borde no afecte el tamaño total */
+}
+
+/* ==========================================================================
+   ESTILOS PARA LA FICHA DE SOCIO (INSERCIÓN DINÁMICA)
+   ========================================================================== */
+.ficha-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  margin-top: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.ficha-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background-color: #f8fafc;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+}
+
+.ficha-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(1, 18, 56, 0.15);
+  background-color: #ffffff;
+}
+
+.ficha-actividades-container {
+  margin-top: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.ficha-placeholder {
+  color: var(--secondary-color);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1.5rem;
+  font-style: italic;
+}
+/* ==========================================================================
+   ESTILOS DINÁMICOS PARA MENSAJES DE ALTA DE SOCIO (createElement / appendChild)
+   ========================================================================== */
+.error-alta-socio {
+  color: var(--danger-color);
+  background-color: #fef2f2;
+  border: 1px solid var(--danger-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
+
+.exito-alta-socio {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border: 1px solid #badbcc;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.75rem;
+}
