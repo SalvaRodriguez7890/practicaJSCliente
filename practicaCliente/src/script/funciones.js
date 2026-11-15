@@ -21,6 +21,7 @@ const divFormularioFicha = document.getElementById("member-card-details");
 const btnFicha = document.getElementById('btnBuscaFicha');
 const divAltaSocio = document.getElementById("alta-notification")
 const btnAltaSocio = document.getElementById("darAltaSocio");
+const contenedorStats = document.getElementById("stats-container");
 
 
 /**
@@ -33,6 +34,8 @@ muestraFecha(new Date());
 setInterval(actualizarHora, 1000);
 //llamada para mostrar la lista de socios
 muestraSocios(listaSocios); 
+//llamo al a funcion de las estadisticas
+estadisticas();
 //EventListener del boton que pone a pantalla completa la app
 document.getElementById('btn-fullscreen').addEventListener('click', appCompleta);
 
@@ -824,6 +827,9 @@ function darAltaSocio() {
   // Actualizamos la tabla de la interfaz
   filtrarYMostrarSocios();
 
+  //actualizo las estadisticas porque insertamos al nuevo socio
+  estadisticas();
+
   // Limpio el formulario si todo sale bien
   document.getElementById("form-add-member").reset();
   
@@ -865,4 +871,174 @@ function createNode(tipo, texto, id, clase){
    }
 
    return elemento;
+}
+
+
+
+/**
+ * Funcion auxiliar para estadisticas que crea una "tarjeta" de estadística con un título y un valor
+ * @param {string} titulo Texto del título de la estadística
+ * @param {string|Node} valor Texto o nodo con el valor a mostrar
+ * @returns {Node} div con la tarjeta ya montada
+ */
+function creaTarjetaStat(titulo, valor) {
+  //Creo el div contenedor de la tarjeta
+  let tarjeta = createNode("div", "", "", "");
+
+  //Creo el título de la estadística
+  let tituloStat = createNode("h3", titulo, "", "");
+  tarjeta.appendChild(tituloStat);
+
+  //Si el valor es un texto creo un párrafo, si ya es un nodo (lista, etc) lo meto directamente
+  if (typeof valor === "string") {
+    let valorStat = createNode("p", valor, "", "");
+    tarjeta.appendChild(valorStat);
+  } else {
+    tarjeta.appendChild(valor);
+  }
+
+  //devuelvo la tarjeta
+  return tarjeta;
+}
+
+/**
+ * Crea las estadisticas del club
+ * @returns 
+ */
+function estadisticas() {
+
+  //Cojo el contenedor de las estadísticas y lo vacío para que no se dupliquen al volver a llamarla (replaceChildren() borra todos los hijos)
+  contenedorStats.replaceChildren();
+
+  //Creo el Número total de socios
+  let totalSocios = listaSocios.length;
+
+  // Si no hay socios, muestro un mensaje y salgo para evitar divisiones entre 0 (siempre hay socios)
+  if (totalSocios === 0) {
+    contenedorStats.appendChild(createNode("p", "No hay socios para mostrar estadísticas", "", ""));
+    return;
+  }
+
+  //Ingresos mensuales y cuota media
+  let ingresosMensuales = 0;
+
+  //Edades
+  let sumaEdades = 0;
+  let edadMinima = calcularEdad(listaSocios[0].fechaNacimiento); //la inicializo por ejemplo primero en el primer socio que hay
+  let edadMaxima = edadMinima;
+
+  //Variables booleanas de menores y de actividades
+  let hayMenores = false;
+  let todosConActividad = true;
+
+  // Objeto para contar cuántos socios practican cada actividad
+  let contadorActividades = {};
+
+  // Array para dominios sin repetir
+  let dominios = [];
+
+  //Recorro la lista de socios una sola vez y voy calculando todo
+  for (let socio of listaSocios) {
+
+    //Sumo la cuota de cada socio
+    ingresosMensuales += socio.cuota;
+
+    //Calculo la edad del socio con mi función y actualizo suma, mínima y máxima
+    let edad = calcularEdad(socio.fechaNacimiento);
+    sumaEdades += edad;
+    //voy comparando para sacar la minima
+    if (edad < edadMinima) {
+      edadMinima = edad;
+    }
+     //voy comparando para sacar la maxima
+    if (edad > edadMaxima) {
+      edadMaxima = edad;
+    }
+
+    //Si la edad es menor de 18 pongo hayMenores a true
+    if (edad < 18) {
+      hayMenores = true;
+    }
+
+    //Parto las actividades por la "," y cuento cada una
+    let actividades = socio.actividades.split(",");
+    let actividadesValidas = 0;
+
+    //recorro las actividades para contarlas
+    for (let act of actividades) {
+      let nombreAct = act.trim().toLowerCase();
+
+      //Solo cuento las actividades que no estén vacías
+      if (nombreAct != "") {
+        actividadesValidas++;
+
+        //Si la actividad ya existe en el objeto le sumo 1, si no la inicializo a 1
+        if (contadorActividades[nombreAct]) {
+          contadorActividades[nombreAct]++;
+        } else {
+          contadorActividades[nombreAct] = 1;
+        }
+      }
+    }
+
+    //Si el socio no tiene ninguna actividad válida(nunca puede pasar), ya no todos tienen actividad
+    if (actividadesValidas == 0) {
+      todosConActividad = false;
+    }
+
+    //Saco el dominio del correo y si no está ya en el array lo añado
+    let dominio = socio.email.split("@")[1];
+    if (!dominios.includes(dominio)) {
+      dominios.push(dominio);
+    }
+  }
+
+  //Calculo la cuota media y la edad media
+  const cuotaMedia = ingresosMensuales / totalSocios;
+  const edadMedia = sumaEdades / totalSocios;
+
+  // Busco la actividad más popular recorriendo el objeto contador
+  let actividadPopular = "";
+  let maxSocios = 0;
+  for (let act in contadorActividades) {
+    if (contadorActividades[act] > maxSocios) {
+      maxSocios = contadorActividades[act];
+      actividadPopular = act;
+    }
+  }
+
+  //Los 3 socios más veteranos, copio el array con slice para no alterar el original
+  //y lo ordeno por fecha de alta de más antigua a más reciente
+  let sociosVeteranos = listaSocios.slice();
+  sociosVeteranos.sort(function(socio1, socio2) {
+    return new Date(socio1.fechaAlta).getTime() - new Date(socio2.fechaAlta).getTime();
+  });
+  //saco los tres primeros socios
+  sociosVeteranos = sociosVeteranos.slice(0, 3);
+
+  //Creo la lista (ul) de veteranos con un li por socio
+  let listaVeteranos = createNode("ul", "", "", "");
+  for (let vet of sociosVeteranos) {
+    let liVeterano = createNode("li", `${vet.nombre} ${vet.apellidos} (${vet.fechaAlta})`, "", "");
+    listaVeteranos.appendChild(liVeterano);
+  }
+
+  //Creo la lista (ul) de dominios con un li por dominio
+  let listaDominios = createNode("ul", "", "", "stat-lista");
+  for (let dom of dominios) {
+    listaDominios.appendChild(createNode("li", dom, "", ""));
+  }
+
+  //Ahora creo todas las tarjetas y las añado al contenedor
+  contenedorStats.appendChild(creaTarjetaStat("Total de socios", String(totalSocios)));
+  contenedorStats.appendChild(creaTarjetaStat("Ingresos mensuales", ingresosMensuales.toFixed(2) + "€"));
+  contenedorStats.appendChild(creaTarjetaStat("Cuota media", cuotaMedia.toFixed(2) + "€"));
+  contenedorStats.appendChild(creaTarjetaStat("Edad media", edadMedia.toFixed(1) + " años"));
+  contenedorStats.appendChild(creaTarjetaStat("Edad mínima", edadMinima + " años"));
+  contenedorStats.appendChild(creaTarjetaStat("Edad máxima", edadMaxima + " años"));
+  contenedorStats.appendChild(creaTarjetaStat("Actividad más popular", `${actividadPopular} (${maxSocios} socios)`));
+  contenedorStats.appendChild(creaTarjetaStat("¿Hay socios menores de edad?", hayMenores ? "Sí" : "No"));
+  contenedorStats.appendChild(creaTarjetaStat("¿Todos tienen actividad?", todosConActividad ? "Sí" : "No"));
+  contenedorStats.appendChild(creaTarjetaStat("3 socios más veteranos", listaVeteranos));
+  contenedorStats.appendChild(creaTarjetaStat("Dominios de correo", listaDominios));
 }
