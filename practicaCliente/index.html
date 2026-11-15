@@ -22,7 +22,7 @@
   </header>
 
   <main class="mainPrincipal">
-
+    
     <!-- Listado de Socios -->
     <section id="listado-section" class="card">
       <div class="section-header">
@@ -96,13 +96,13 @@
             <label for="search-dni-input">Buscar socio por DNI:</label>
             <div class="inline-input-button">
               <input type="text" id="search-dni-input" placeholder="Ej: 12345678Z" required>
-              <button type="submit" class="btn btn-primary">Buscar</button>
+              <button type="button" class="btn btn-primary" id="btnBuscaFicha">Buscar</button>
             </div>
           </div>
         </form>
 
         <div id="member-card-details" class="member-card-container">
-          <p class="placeholder-text">Introduce un DNI válido arriba para consultar la ficha completa del socio.</p>
+          <p class="placeholder-text" id="textoIntroduceDNI">Introduce un DNI válido arriba para consultar la ficha completa del socio.</p>
         </div>
       </section>
 
@@ -159,10 +159,10 @@
             <span class="error-message" id="error-add-actividades"></span>
           </div>
 
-          <button type="submit" class="btn btn-success btn-block">Dar de alta socio</button>
+          <button type="button" class="btn btn-success btn-block" id = "darAltaSocio">Dar de alta socio</button>
         </form>
 
-        <div id="alta-notification" class="notification hidden"></div>
+        <div id="alta-notification"></div>
       </section>
 
       <!--  Estadísticas -->
