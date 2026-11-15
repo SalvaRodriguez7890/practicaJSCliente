@@ -1,7 +1,4 @@
-/**
- * Array que contiene todos los socios iniciales
- * 50 socios con cuotas con decimales variados
- */
+
 const sociosClubCompleto = [
   {
     id: "SOC-0001",
@@ -11,7 +8,7 @@ const sociosClubCompleto = [
     email: "hector.blazquez@correo.es",
     telefono: "612987654",
     fechaNacimiento: "2000-05-30",
-    fechaAlta: "2021-02-10",
+    fechaAlta: "2000-02-10",
     actividades: "natación, pádel",
     cuota: 35.50
   },
