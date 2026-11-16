@@ -9,6 +9,19 @@ const seccion = document.getElementById('listado-section');
 
 // Lista original completa de socios
 const listaSocios = sociosClubCompleto;
+// Socio que se está mostrando ahora mismo en la ficha (null si no hay ninguno)
+let socioActual = null;
+
+//contador de ID
+let ultimoNumeroId = 0;
+
+//bucle simple que recorre todos los socios y el ultimo inicializa el ultimoNumeroId
+for (let soc of listaSocios) {
+  let numero = parseInt(soc.id.split("-")[1], 10);
+  if (numero > ultimoNumeroId) {
+    ultimoNumeroId = numero;
+  }
+}
 
 
 // Elementos del DOM
@@ -22,6 +35,8 @@ const btnFicha = document.getElementById('btnBuscaFicha');
 const divAltaSocio = document.getElementById("alta-notification")
 const btnAltaSocio = document.getElementById("darAltaSocio");
 const contenedorStats = document.getElementById("stats-container");
+const botonModificar = document.getElementById("btnModifica");
+const botonBaja = document.getElementById("btnBaja");
 
 
 /**
@@ -38,6 +53,92 @@ muestraSocios(listaSocios);
 estadisticas();
 //EventListener del boton que pone a pantalla completa la app
 document.getElementById('btn-fullscreen').addEventListener('click', appCompleta);
+//EventListener donde llamo a la funcion de abrirVentannaModificar
+botonModificar.addEventListener("click", abrirVentanaModificar);
+//EventListener para dar de baja al socio
+botonBaja.addEventListener("click", darDeBajaSocio);
+
+/**
+ * Funcion que devuelve el socioAtual para la ventana
+ * @returns 
+ */
+function obtenerSocioActual() {
+  return socioActual;
+}
+
+/**
+ * Funcion que abre la ventana para modificar un socio encontrado en el busca por dni
+ * @returns 
+ */
+function abrirVentanaModificar() {
+  //si el socio es null pues acabo la funcion
+  if (socioActual === null) {
+    return;
+  }
+
+  //abro la ventana del formulario, le indico la ruta del html, le pongo un nombre cualquiera y una altura, anchuira y una barra de scroll
+  const ventana = window.open("./src/formularioModificaSocio.html", "ventanaModificarSocio", "width=700,height=1050,scrollbars=yes");
+
+  //Por si acaso la ventana no se crea es porque el navegador la bloquea
+  if (!ventana) {
+    alert("El navegador ha bloqueado la ventana emergente. Permítela para poder modificar el socio.");
+  }
+}
+
+/**
+ * Funcion para dar de baja al socio que encontramos en la ficha 
+ * @returns 
+ */
+function darDeBajaSocio() {
+
+  //Si no hay ningun socio en la ficha no hago nada
+  if (socioActual === null) {
+    return;
+  }
+
+  //Pido confirmacion antes de borrar. Si cancela, salgo de la funcion
+  let confirmado = confirm("¿Seguro que quieres dar de baja a " + socioActual.nombre + " " + socioActual.apellidos + "?");
+  if (!confirmado) {
+    return;
+  }
+
+  //Busco la posicion (indice) del socio dentro de listaSocios
+  let indice = -1;
+  for (let i = 0; i < listaSocios.length; i++) {
+    if (listaSocios[i].id === socioActual.id) {
+      indice = i;
+      break;
+    }
+  }
+
+  //Si lo ha encontrado lo borro del array con splice(posicion, cuantos borrar)
+  if (indice != -1) {
+    listaSocios.splice(indice, 1);
+  }
+
+  //Guardo el nombre para el mensaje antes de perder la referencia
+  let nombreBorrado = socioActual.nombre;
+
+  //Limpio el estado de la ficha
+  socioActual = null;
+  buscaFicha.value = "";
+
+  //le cambio las clases a los botones
+  botonModificar.className = "btnEsconder";
+  botonBaja.className = "btnEsconder";
+
+  //Dejo la ficha con el mensaje inicial
+  divFormularioFicha.replaceChildren();
+  divFormularioFicha.appendChild(createNode("p", "Introduce un DNI válido arriba para consultar la ficha completa del socio.", "", "ficha-placeholder"));
+
+  //Refresco tabla y estadisticas
+  filtrarYMostrarSocios();
+  estadisticas();
+
+  //Aviso de que se ha dado de baja
+  divAltaSocio.replaceChildren();
+  divAltaSocio.appendChild(createNode("div", "Socio " + nombreBorrado + " dado de baja correctamente.", "", "exito-alta-socio"));
+}
 
 /**
  * Mega funcion, que tiene en cuenta lo que escribimos en el buscador y el filtro por actividad y orden
@@ -463,6 +564,15 @@ function fichaSocio(){
   let dni = buscaFicha.value;
   // inicializo el socioEncontrado a null.
   let socioEncontrado = null;
+
+  socioActual = null;
+
+  //Le meto la clase "esconder al boton"
+  botonModificar.className = "btnEsconder";
+
+  //Boton para borrar el socio
+  botonBaja.className = "btnEsconder";
+
   // pregunto si el nodo tiene algo dentro, si tiene lo borro
   if (divFormularioFicha.hasChildNodes()) {
     divFormularioFicha.replaceChildren();
@@ -480,7 +590,10 @@ function fichaSocio(){
 
     // si el socioEncontrado es diferente de null creo el formulario con los datos
     if(socioEncontrado != null){
-     
+
+        //si encuentro el socio lo primero que hago es igualarlo al socio de la constante (el que se ha encontrado e inicialice a null)
+        socioActual = socioEncontrado;
+
         // Creo un salto de línea
         let br = createNode("br", "", "", "");
 
@@ -566,10 +679,19 @@ function fichaSocio(){
         divFormularioFicha.appendChild(labelCuota);
         divFormularioFicha.appendChild(cuotaMensualSocio);
 
+        //Boton para actualizar la información
+        botonModificar.className = "btn btn-primary"
+        //boton para dar de baja
+        botonBaja.className = "btn btn-danger";
+
     } else if (socioEncontrado == null) {
+      //Boro lo que tenga el div y le meto el mensaje del DNI 
       divFormularioFicha.replaceChildren();
       let pIntroDNI = createNode("p", "Introduce un DNI válido arriba para consultar la ficha completa del socio.", "", "ficha-placeholder");
       divFormularioFicha.appendChild(pIntroDNI);
+      //le cambio las clases al los botones
+      botonModificar.className = "btnEsconder";
+      botonBaja.className = "btnEsconder";
     }
   }
 }
@@ -793,12 +915,10 @@ function darAltaSocio() {
   let nombre = partesNombre[0];
   let apellidos = partesNombre.slice(1).join(" ");
 
-  // Generamos un ID automático nuevo
-  let ultimoSocio = listaSocios[listaSocios.length - 1];
-  let partesId = ultimoSocio.id.split("-");
-  let numeroSiguiente = parseInt(partesId[1], 10) + 1;
-  let numeroFormateado = String(numeroSiguiente).padStart(4, '0');
-  let nuevoId = "SOC-" + numeroFormateado;
+  
+  // Generamos un ID nuevo a partir del contador
+  ultimoNumeroId++; //sumo uno al contador actual
+  let nuevoId = "SOC-" + String(ultimoNumeroId).padStart(4, '0');
 
   // Obtenemos la fecha actual
   let hoy = new Date();
@@ -1042,3 +1162,4 @@ function estadisticas() {
   contenedorStats.appendChild(creaTarjetaStat("3 socios más veteranos", listaVeteranos));
   contenedorStats.appendChild(creaTarjetaStat("Dominios de correo", listaDominios));
 }
+
