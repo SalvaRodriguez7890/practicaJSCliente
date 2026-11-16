@@ -286,6 +286,25 @@ input.input-error {
   background-color: var(--primary-hover);
 }
 
+/*Estilo para el boton modificar socio*/
+
+.btnEsconder{
+  visibility: hidden;
+}
+
+#btnModifica, #btnBaja {
+  margin-right: 0.5rem;
+}
+
+/*Estilos de boton borrar socios*/
+.btn-danger {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+.btn-danger:hover {
+  background-color: #bb2d3b;
+}
+
 .btn-secondary {
   background-color: var(--secondary-color);
   color: #ffffff;
