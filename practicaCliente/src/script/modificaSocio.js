@@ -9,7 +9,7 @@ if (!padre || padre.closed || !padre.obtenerSocioActual || !padre.obtenerSocioAc
   document.body.replaceChildren(createMensaje("No hay ningún socio seleccionado. Cierra esta ventana y pulsa Modificar desde la ficha."));
 } else {
     //si no inicialzo el formulario usando la funcion
-  iniciaFormulario();
+    iniciaFormulario();
 }
 
 //funcion para crear un mensaje de texto
@@ -150,7 +150,7 @@ function guardaCambios(socio) {
       span.textContent = "-" + errores[i].toUpperCase();
       //añado cada span al div de Erorres
       divErrores.appendChild(span);
-      //si es la ultima vuelta le meto un br
+      //si no es el último error, meto un br para separarlo del siguiente.
       if (i < errores.length - 1) {
         divErrores.appendChild(document.createElement("br"));
       }
