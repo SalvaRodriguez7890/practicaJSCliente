@@ -9,6 +9,8 @@ const seccion = document.getElementById('listado-section');
 
 // Lista original completa de socios
 const listaSocios = sociosClubCompleto;
+// Socio que se está mostrando ahora mismo en la ficha (null si no hay ninguno)
+let socioActual = null;
 
 
 // Elementos del DOM
@@ -22,6 +24,7 @@ const btnFicha = document.getElementById('btnBuscaFicha');
 const divAltaSocio = document.getElementById("alta-notification")
 const btnAltaSocio = document.getElementById("darAltaSocio");
 const contenedorStats = document.getElementById("stats-container");
+const botonModificar = document.getElementById("btnModifica");
 
 
 /**
@@ -38,6 +41,36 @@ muestraSocios(listaSocios);
 estadisticas();
 //EventListener del boton que pone a pantalla completa la app
 document.getElementById('btn-fullscreen').addEventListener('click', appCompleta);
+
+//EventListener donde llamo a la funcion de abrirVentannaModificar
+botonModificar.addEventListener("click", abrirVentanaModificar);
+
+/**
+ * Funcion que devuelve el socioAtual para la ventana
+ * @returns 
+ */
+function obtenerSocioActual() {
+  return socioActual;
+}
+
+/**
+ * Funcion que abre la ventana para modificar un socio encontrado en el busca por dni
+ * @returns 
+ */
+function abrirVentanaModificar() {
+  //si el socio es null pues acabo la funcion
+  if (socioActual === null) {
+    return;
+  }
+
+  //abro la ventana del formulario, le indico la ruta del html, le pongo un nombre cualquiera y una altura, anchuira y una barra de scroll
+  const ventana = window.open("./src/formularioModificaSocio.html", "ventanaModificarSocio", "width=700,height=1050,scrollbars=yes");
+
+  //Por si acaso la ventana no se crea es porque el navegador la bloquea
+  if (!ventana) {
+    alert("El navegador ha bloqueado la ventana emergente. Permítela para poder modificar el socio.");
+  }
+}
 
 /**
  * Mega funcion, que tiene en cuenta lo que escribimos en el buscador y el filtro por actividad y orden
@@ -463,6 +496,12 @@ function fichaSocio(){
   let dni = buscaFicha.value;
   // inicializo el socioEncontrado a null.
   let socioEncontrado = null;
+
+  socioActual = null;
+
+  //Le meto la clase "esconder al boton"
+  botonModificar.className = "btnEsconder";
+
   // pregunto si el nodo tiene algo dentro, si tiene lo borro
   if (divFormularioFicha.hasChildNodes()) {
     divFormularioFicha.replaceChildren();
@@ -480,7 +519,10 @@ function fichaSocio(){
 
     // si el socioEncontrado es diferente de null creo el formulario con los datos
     if(socioEncontrado != null){
-     
+
+        //si encuentro el socio lo primero que hago es igualarlo al socio de la constante (el que se ha encontrado e inicialice a null)
+        socioActual = socioEncontrado;
+
         // Creo un salto de línea
         let br = createNode("br", "", "", "");
 
@@ -566,10 +608,14 @@ function fichaSocio(){
         divFormularioFicha.appendChild(labelCuota);
         divFormularioFicha.appendChild(cuotaMensualSocio);
 
+        //Boton para actualizar la información
+        botonModificar.className = "btn btn-primary"
+
     } else if (socioEncontrado == null) {
       divFormularioFicha.replaceChildren();
       let pIntroDNI = createNode("p", "Introduce un DNI válido arriba para consultar la ficha completa del socio.", "", "ficha-placeholder");
       divFormularioFicha.appendChild(pIntroDNI);
+      botonModificar.className = "btnEsconder";
     }
   }
 }
@@ -1042,3 +1088,4 @@ function estadisticas() {
   contenedorStats.appendChild(creaTarjetaStat("3 socios más veteranos", listaVeteranos));
   contenedorStats.appendChild(creaTarjetaStat("Dominios de correo", listaDominios));
 }
+

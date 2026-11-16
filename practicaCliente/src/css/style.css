@@ -286,6 +286,13 @@ input.input-error {
   background-color: var(--primary-hover);
 }
 
+/*Estilo para el boton modificar socio*/
+
+.btnEsconder{
+  visibility: hidden;
+}
+
+
 .btn-secondary {
   background-color: var(--secondary-color);
   color: #ffffff;
