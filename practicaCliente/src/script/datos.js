@@ -8,7 +8,7 @@ const sociosClubCompleto = [
     email: "hector.blazquez@correo.es",
     telefono: "612987654",
     fechaNacimiento: "2000-05-30",
-    fechaAlta: "2000-02-10",
+    fechaAlta: "2026-10-10",
     actividades: "natación, pádel",
     cuota: 35.50
   },
@@ -20,7 +20,7 @@ const sociosClubCompleto = [
     email: "valeria.ramos@gmail.com",
     telefono: "623876543",
     fechaNacimiento: "2001-09-18",
-    fechaAlta: "2022-04-15",
+    fechaAlta: "2025-04-15",
     actividades: "yoga, pilates",
     cuota: 30.25
   },

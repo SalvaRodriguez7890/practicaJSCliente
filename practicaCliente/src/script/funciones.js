@@ -241,6 +241,7 @@ function filtrarYMostrarSocios() {
     case 'apellidos' : ordenaString(sociosFiltrados,"apellidos"); break;
     case 'jovenes' : ordenaEdad(sociosFiltrados); break;
     case 'antiguos' : ordenaViejo(sociosFiltrados); break;
+    case 'cuotaCara' : ordenaCuota(sociosFiltrados); break;
     //si no es ninguno de los anteriores solo puede ser "id", por ID se ordena de forma automatica ya que los socios se muestran y se crean con los id en orden
     default: sociosFiltrados = sociosFiltrados;
 
@@ -311,6 +312,25 @@ function ordenaViejo(array){
 
     //dentro del return (retrun del sort) meto directamente la resta entre ambos, si quiero ordenar de viejo a joven intercambio el orden de la resta
     return fechaAlta1.getTime() - fechaAlta2.getTime();
+  })
+
+  //ahora con el array ordeando lo devuelvo
+  return array;
+
+}
+
+/**
+ * Recibe un array de socios y los ordena por cuota cara
+ * @param {*} array 
+ */
+function ordenaCuota(array){
+
+  //este metodo de ordenacion es muy parecido al de las edades, pero usando directamente y restando las cuotas 
+
+  array = array.sort(function(socio1, socio2){
+
+    //dentro del return (retrun del sort) meto directamente la resta entre ambos
+    return socio2.cuota -socio1.cuota;
   })
 
   //ahora con el array ordeando lo devuelvo
@@ -413,6 +433,52 @@ function actualizarHora() {
     horaHTML.innerText = horaFormateada;
   }
 }
+/**
+ * Funcion que a partir de la fecha de calcula la antiguedad años y meses
+ * @param {*}  fechaAlta
+ * @returns 
+ */
+function calculaAntiguedad(fechaAlta) {
+  const hoy = new Date();
+  const alta = new Date(fechaAlta);
+  let tiempo = hoy.getFullYear() - alta.getFullYear();
+  
+  const mesActual = hoy.getMonth();
+  const mesAlta = alta.getMonth();
+
+  let stringAnio = " años y ";
+  let stringMeses = " meses";
+
+  let tiempoMeses = (mesActual - mesAlta);
+
+  if (mesActual < mesAlta || (mesActual === mesAlta && hoy.getDate() < alta.getDate())) {
+    tiempo-- ;
+  }
+  //para calcular los meses cuando salen negativos
+  if(tiempoMeses < 0){
+    tiempoMeses = tiempoMeses + 12; 
+  }
+  //controlo llas variables de los string plurares
+  if(tiempo == 1){
+    stringAnio = " año y "
+  }
+  if(tiempoMeses == 1){
+    stringMeses = " mes"
+  }
+
+  //si el socio se acaba de apuntar no lleva ni un mes
+  if(tiempo == 0 && tiempoMeses == 0){
+    return "El socio No lleva ni un mes"
+  }
+  //si el socio no lleva un año pero si varios meses
+  if(tiempo == 0 && tiempoMeses >= 1){
+    return tiempoMeses + stringMeses;
+  }
+  //si el socio lleva años y meses
+  return tiempo + stringAnio +  tiempoMeses + stringMeses;
+}
+
+
 
 /**
  * Funcion que a partir de la fecha de nacimiento dice la edad
@@ -532,12 +598,18 @@ function formatoFila(socio){
   //La cuota es migual que la edad, pero le meto un toFixed 2 para que me respete los decimales
   let cuotaSocio = createNode("td", `${socio.cuota.toFixed(2)}€`, "", "tdCuota");
 
+  //creo el nodo para la antiguedad
+  let antiguedadSocio = createNode("td",`${calculaAntiguedad(socio.fechaAlta)}`,"","");
+
+
+
   //Ahora todas las  celdas creadas las meto en lafila
   fila.appendChild(avatar);  
   fila.appendChild(nombreSocio);  
   fila.appendChild(idSocio);  
   fila.appendChild(mailSocio); 
-  fila.appendChild(actividadesSocio);  
+  fila.appendChild(actividadesSocio); 
+  fila.appendChild(antiguedadSocio) ;
   fila.appendChild(edadSocio);  
   fila.appendChild(cuotaSocio);  
 
@@ -598,9 +670,9 @@ function fichaSocio(){
         let br = createNode("br", "", "", "");
 
         // Creo la parte nombre
-        let labelNombre = createNode("label", "Nombre: ", "", "ficha-label");
+        let labelNombre = createNode("label", "Nombre y apellidos: ", "", "ficha-label");
         let inputNombre = createNode("input", "", "", "ficha-input");
-        inputNombre.value = socioEncontrado.nombre;
+        inputNombre.value = socioEncontrado.nombre + " " + socioEncontrado.apellidos;
        
         // Creo la parte ID
         let labelID = createNode("label", "ID: ", "", "ficha-label");
@@ -649,6 +721,12 @@ function fichaSocio(){
         let labelCuota = createNode("label", "Cuota: ", "", "ficha-label");
         let cuotaMensualSocio = createNode("input", "", "", "ficha-input");
         cuotaMensualSocio.value = socioEncontrado.cuota.toFixed(2) + "€";
+
+        // Curiosidad
+        let labelCuriosidad = createNode("label", "Curiosidad: ", "", "ficha-label");
+         let inputCuriosidad = createNode("input", "", "", "ficha-input");
+         inputCuriosidad.value = "El nombre y apellidos contiene: " + cuentaLetras(socioEncontrado.nombre + socioEncontrado.apellidos) + " letras";
+        
        
         // Añadimos todo al contenedor del formulario
         divFormularioFicha.appendChild(labelNombre);
@@ -678,6 +756,9 @@ function fichaSocio(){
         divFormularioFicha.appendChild(br);
         divFormularioFicha.appendChild(labelCuota);
         divFormularioFicha.appendChild(cuotaMensualSocio);
+        divFormularioFicha.appendChild(br);
+        divFormularioFicha.appendChild(labelCuriosidad);
+        divFormularioFicha.appendChild(inputCuriosidad);
 
         //Boton para actualizar la información
         botonModificar.className = "btn btn-primary"
@@ -695,6 +776,33 @@ function fichaSocio(){
     }
   }
 }
+
+
+
+/**
+ * Cuenta las letras que existan dentro del nombre
+ * @param {*} nombreSocio 
+ * @returns 
+ */
+function cuentaLetras(nombreSocio){
+  //Comprobar el formato básico: 8 dígitos y una letra al final
+  const regex = /[aeiouAEIOUáéíóúÁÉÍÓÚ]/;
+
+  let arrayCadena = nombreSocio.split("");
+  let contador = 0;
+
+  for (let caracter of arrayCadena){
+
+     if(regex.test(caracter)){
+       contador++;
+     }
+
+  }
+  return contador;
+
+}
+
+
 /**
  * Funcion que se le pasa una fecha de alta y devuelve los dias que lleva el tio apuntado
  * @param {*} fecha 
@@ -886,6 +994,19 @@ function darAltaSocio() {
 
   if (cuota == 0) {
     arrayErrores.push("Cuota NO INDICADO");
+  }
+
+  //Comprobar el formato: hasta 3 dígitos y 2 decimales
+  //variable boolean para saber si pasa la expresion
+  let cuotaRegex = false
+  const regexCuota = /^\d{1,3}([,.]\d{0,2})?$/;
+  if (regexCuota.test(cuota)) {
+    cuotaRegex = true; // El formato coincide
+  }
+
+  //campo para controlar el formato cuota
+  if(!cuotaRegex){
+    arrayErrores.push("Formato Cuota Incorrecto (hasta 3 digitos y 2 decimales)");
   }
 
   if (actividadesSeleccionadas.length == 0) {
